@@ -28,7 +28,7 @@ jobs:
         working-directory: iris-httpsend-module
         run: |
           mkdir results
-          docker save --output results/iris-httpsend-${{ env.HTTPSEND_VERSION }}.dockers.tar iris-web_db iriswebapp_nginx iriswebapp_app
+          docker save iris-web_db iriswebapp_nginx iriswebapp_app | gzip > results/iris-httpsend-${{ env.HTTPSEND_VERSION }}.dockers.tar.gz
       - name: Save dockers as artifacts
         uses: actions/upload-artifact@v3
         with:

@@ -1,0 +1,13 @@
+name: Continuous Integration
+on: push
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Check out Iris
+        uses: actions/checkout@v3
+        with:
+          repository: dfir-iris/iris-web
+          ref: v2.0.0-beta-1
+          path: iris-web

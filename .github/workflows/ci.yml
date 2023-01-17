@@ -35,3 +35,4 @@ jobs:
           name: dockers
           path: iris-httpsend-module/results/iris-httpsend-${{ env.HTTPSEND_VERSION }}.dockers.tar
           if-no-files-found: error
+          retention-days: 2

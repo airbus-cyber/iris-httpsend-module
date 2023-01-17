@@ -29,3 +29,9 @@ jobs:
         run: |
           mkdir results
           docker save --output results/iris-httpsend-${{ env.HTTPSEND_VERSION }}.dockers.tar iris-web_db iriswebapp_nginx iriswebapp_app
+      - name: Save dockers as artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: dockers
+          path: iris-httpsend-module/results/iris-httpsend-${{ env.HTTPSEND_VERSION }}.dockers.tar
+          if-no-files-found: error

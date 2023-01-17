@@ -7,11 +7,26 @@
 
 * Needs the API_KEY to authenticate the user.
 * Requests can be performed on https://localhost, the default certificates are stored in docker/dev_certs
-curl --cacert docker/dev_certs/iris_dev_cert.pem --request GET --url https://127.0.0.1:443/api/versions --header 'Authorization: Bearer '${API_KEY} --header 'Content-Type: application/json'
+  ```
+  curl --cacert docker/dev_certs/iris_dev_cert.pem --header 'Authorization: Bearer '${API_KEY} --header 'Content-Type: application/json' --request GET --url https://127.0.0.1:443/api/versions
+  ```
 * Requests can also be performed on http://localhost:8000
-curl --request GET --url http://127.0.0.1:8000/api/versions --header 'Authorization: Bearer '${API_KEY} --header 'Content-Type: application/json'
+  ```
+  curl --header 'Authorization: Bearer '${API_KEY} --header 'Content-Type: application/json' --request GET --url http://127.0.0.1:8000/api/versions
+  ```
 
 # Endpoints
 
+## API version information
+```
+GET api/versions
+```
+## Create a case
+```
+POST {"case_name": "Case name", "case_description": "Case description", "case_customer": <customer_identifier:int>, "case_soc_id": "" } /manage/cases/add
+```
+
 ## Export a case
-* /case/export?cid={case_identifier}
+```
+GET /case/export?cid={case_identifier}
+```

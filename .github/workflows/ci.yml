@@ -13,3 +13,7 @@ jobs:
           repository: dfir-iris/iris-web
           ref: ${{ env.IRIS_VERSION }}
           path: iris-web
+      - name: Building dockers
+        working-directory: iris-web
+        run: |
+          docker build --tag iris-web_db docker/db

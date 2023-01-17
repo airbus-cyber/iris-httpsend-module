@@ -7,9 +7,9 @@ jobs:
     env:
       IRIS_VERSION: v2.0.0-beta-1
     steps:
-      - name: Check out Iris $IRIS_VERSION
+      - name: Check out Iris ${{ env.IRIS_VERSION }}
         uses: actions/checkout@v3
         with:
           repository: dfir-iris/iris-web
-          ref: $IRIS_VERSION
+          ref: ${{ env.IRIS_VERSION }}
           path: iris-web

@@ -19,11 +19,11 @@
 
 ## API version information
 ```
-GET api/versions
+GET /api/versions
 ```
 ## Create a case
 ```
-POST {"case_name": "Case name", "case_description": "Case description", "case_customer": <customer_identifier:int>, "case_soc_id": "" } /manage/cases/add
+POST /manage/cases/add {"case_name": "Case name", "case_description": "Case description", "case_customer": <customer_identifier:int>, "case_soc_id": "" }
 ```
 
 ## Export a case

@@ -17,3 +17,5 @@ jobs:
         working-directory: iris-web
         run: |
           docker build --tag iris-web_db docker/db
+          docker build --build-arg NGINX_CONF_GID=1234 --build-arg NGINX_CONF_FILE=nginx.conf --tag iriswebapp_nginx docker/nginx
+          

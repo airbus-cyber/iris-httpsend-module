@@ -15,7 +15,7 @@
 #  Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 # to create and populate the test venv:
-# * python3 -m venv venv
+# * python -m venv venv
 # * source venv/bin/activate
 # * pip install -r requirements.txt
 # to execute these tests:

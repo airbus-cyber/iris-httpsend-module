@@ -6,12 +6,15 @@ jobs:
     runs-on: ubuntu-20.04
     env:
       IRIS_VERSION: v2.0.0-beta-1
-      HTTPSEND_VERSION: 0.1.0
     steps:
-      - name: Check out iris-httpsend-module ${{ env.HTTPSEND_VERSION }}
+      - name: Check out iris-httpsend-module
         uses: actions/checkout@v3
         with:
           path: iris-httpsend-module
+      - name: Setting iris-httpsend-module version in HTTPSEND_VERSION
+        working-directory: iris-httpsend-module
+        run: |
+          echo "HTTPSEND_VERSION=$(python setup.py --version)" >> $GITHUB_ENV
       - name: Check out Iris ${{ env.IRIS_VERSION }}
         uses: actions/checkout@v3
         with:

@@ -51,13 +51,12 @@ jobs:
           docker build --file docker/webApp/Dockerfile --tag iriswebapp_app .
       - name: Archive dockers
         run: |
-          mkdir artifacts
-          docker save iris-web_db iriswebapp_nginx iriswebapp_app | gzip > artifacts/iris-httpsend-${{ env.HTTPSEND_VERSION }}.dockers.tar.gz
+          docker save iris-web_db iriswebapp_nginx iriswebapp_app | gzip > iris-httpsend-${{ env.HTTPSEND_VERSION }}.dockers.tar.gz
       - name: Archive dockers
         uses: actions/upload-artifact@v3
         with:
           name: dockers
-          path: artifacts/iris-httpsend-${{ env.HTTPSEND_VERSION }}.dockers.tar.gz
+          path: iris-httpsend-${{ env.HTTPSEND_VERSION }}.dockers.tar.gz
           if-no-files-found: error
           retention-days: 1
       - name: Release
@@ -65,5 +64,5 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            artifacts/iris-httpsend-${{ env.HTTPSEND_VERSION }}.dockers.tar.gz
+            iris-httpsend-${{ env.HTTPSEND_VERSION }}.dockers.tar.gz
           fail_on_unmatched_files: true

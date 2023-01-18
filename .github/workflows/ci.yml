@@ -11,11 +11,11 @@ jobs:
         with:
           path: iris-httpsend-module
       - name: Get iris-httpsend-module version
-        id: version
+        id: get-version
         working-directory: iris-httpsend-module
         run: |
-          echo "HTTPSEND=$(python setup.py --version)" >> $GITHUB_OUTPUT
-      - name: Build wheel for iris-httpsend-module ${{ steps.version.HTTPSEND }}
+          echo "version=$(python setup.py --version)" >> $GITHUB_OUTPUT
+      - name: Build wheel for iris-httpsend-module ${{ steps.get-version.outputs.version }}
         working-directory: iris-httpsend-module
         run: |
           python setup.py bdist_wheel
@@ -23,11 +23,11 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: iris_httpsend_module
-          path: iris-httpsend-module/dist/iris_httpsend_module-${{ steps.version.HTTPSEND }}-py3-none-any.whl
+          path: iris-httpsend-module/dist/iris_httpsend_module-${{ steps.get-version.outputs.version }}-py3-none-any.whl
           if-no-files-found: error
           retention-days: 1
     outputs:
-      version: ${{ steps.version.HTTPSEND }}
+      version: ${{ steps.get-version.outputs.version }}
 
   dockers:
     name: Build iris dockers with iris-httpsend-module

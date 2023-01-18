@@ -8,22 +8,18 @@ jobs:
     steps:
       - name: Check out iris-httpsend-module
         uses: actions/checkout@v3
-        with:
-          path: iris-httpsend-module
       - name: Get iris-httpsend-module version
         id: get-version
-        working-directory: iris-httpsend-module
         run: |
           echo "version=$(python setup.py --version)" >> $GITHUB_OUTPUT
       - name: Build wheel for iris-httpsend-module ${{ steps.get-version.outputs.version }}
-        working-directory: iris-httpsend-module
         run: |
           python setup.py bdist_wheel
       - name: Archive iris-httpsend-module wheel
         uses: actions/upload-artifact@v3
         with:
           name: iris_httpsend_module
-          path: iris-httpsend-module/dist/iris_httpsend_module-${{ steps.get-version.outputs.version }}-py3-none-any.whl
+          path: dist/iris_httpsend_module-${{ steps.get-version.outputs.version }}-py3-none-any.whl
           if-no-files-found: error
           retention-days: 1
     outputs:

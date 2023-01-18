@@ -2,20 +2,20 @@ name: Continuous Integration
 on: push
 
 jobs:
-  build:
+  iris-httpsend-module:
+    name: Build iris-httpsend-module
     runs-on: ubuntu-20.04
-    env:
-      IRIS_VERSION: v2.0.0-beta-1
     steps:
       - name: Check out iris-httpsend-module
         uses: actions/checkout@v3
         with:
           path: iris-httpsend-module
-      - name: Set iris-httpsend-module version in HTTPSEND_VERSION
+      - name: Get iris-httpsend-module version
+        id: version
         working-directory: iris-httpsend-module
         run: |
-          echo "HTTPSEND_VERSION=$(python setup.py --version)" >> $GITHUB_ENV
-      - name: Build wheel for iris-httpsend-module ${{ env.HTTPSEND_VERSION }}
+          echo "HTTPSEND=$(python setup.py --version)" >> $GITHUB_OUTPUT
+      - name: Build wheel for iris-httpsend-module ${{ steps.version.HTTPSEND }}
         working-directory: iris-httpsend-module
         run: |
           python setup.py bdist_wheel
@@ -23,9 +23,20 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: iris_httpsend_module
-          path: iris-httpsend-module/dist/iris_httpsend_module-${{ env.HTTPSEND_VERSION }}-py3-none-any.whl
+          path: iris-httpsend-module/dist/iris_httpsend_module-${{ steps.version.HTTPSEND }}-py3-none-any.whl
           if-no-files-found: error
           retention-days: 1
+    outputs:
+      version: ${{ steps.version.HTTPSEND }}
+
+  dockers:
+    name: Build iris dockers with iris-httpsend-module
+    runs-on: ubuntu-20.04
+    needs: iris-httpsend-module
+    env:
+      IRIS_VERSION: v2.0.0-beta-1
+      HTTPSEND_VERSION: ${{ needs.iris-httpsend-module.outputs.version }}
+    steps:
       - name: Check out Iris ${{ env.IRIS_VERSION }}
         uses: actions/checkout@v3
         with:

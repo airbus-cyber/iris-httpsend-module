@@ -47,6 +47,7 @@ jobs:
       - name: Build dockers
         working-directory: iris-web
         run: |
+          file source/dependencies/iris_httpsend_module-${{ env.HTTPSEND_VERSION }}-py3-none-any.whl
           printf "\ndependencies/iris_httpsend_module-${{ env.HTTPSEND_VERSION }}-py3-none-any.whl" >> source/requirements.txt
           docker build --tag iris-web_db docker/db
           docker build --build-arg NGINX_CONF_GID=1234 --build-arg NGINX_CONF_FILE=nginx.conf --tag iriswebapp_nginx docker/nginx

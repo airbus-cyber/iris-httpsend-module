@@ -11,7 +11,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           path: iris-httpsend-module
-      - name: Setting iris-httpsend-module version in HTTPSEND_VERSION
+      - name: Set iris-httpsend-module version in HTTPSEND_VERSION
         working-directory: iris-httpsend-module
         run: |
           echo "HTTPSEND_VERSION=$(python setup.py --version)" >> $GITHUB_ENV
@@ -21,7 +21,7 @@ jobs:
           repository: dfir-iris/iris-web
           ref: ${{ env.IRIS_VERSION }}
           path: iris-web
-      - name: Building dockers
+      - name: Build dockers
         working-directory: iris-web
         run: |
           docker build --tag iris-web_db docker/db

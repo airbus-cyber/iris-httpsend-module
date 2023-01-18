@@ -15,6 +15,10 @@ jobs:
         working-directory: iris-httpsend-module
         run: |
           echo "HTTPSEND_VERSION=$(python setup.py --version)" >> $GITHUB_ENV
+      - name: Build wheel for iris-httpsend-module ${{ env.HTTPSEND_VERSION }}
+        working-directory: iris-httpsend-module
+        run: |
+          python setup.py bdist_wheel
       - name: Check out Iris ${{ env.IRIS_VERSION }}
         uses: actions/checkout@v3
         with:

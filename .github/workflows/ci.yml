@@ -8,6 +8,10 @@ jobs:
       IRIS_VERSION: v2.0.0-beta-1
       HTTPSEND_VERSION: 0.1.0
     steps:
+      - name: Check out iris-httpsend-module ${{ env.HTTPSEND_VERSION }}
+        uses: actions/checkout@v3
+        with:
+          path: iris-httpsend-module
       - name: Check out Iris ${{ env.IRIS_VERSION }}
         uses: actions/checkout@v3
         with:
@@ -20,20 +24,15 @@ jobs:
           docker build --tag iris-web_db docker/db
           docker build --build-arg NGINX_CONF_GID=1234 --build-arg NGINX_CONF_FILE=nginx.conf --tag iriswebapp_nginx docker/nginx
           docker build --file docker/webApp/Dockerfile --tag iriswebapp_app .
-      - name: Check out iris-httpsend-module ${{ env.HTTPSEND_VERSION }}
-        uses: actions/checkout@v3
-        with:
-          path: iris-httpsend-module
       - name: Archive dockers
-        working-directory: iris-httpsend-module
         run: |
-          mkdir results
-          docker save iris-web_db iriswebapp_nginx iriswebapp_app | gzip > results/iris-httpsend-${{ env.HTTPSEND_VERSION }}.dockers.tar.gz
+          mkdir artifacts
+          docker save iris-web_db iriswebapp_nginx iriswebapp_app | gzip > artifacts/iris-httpsend-${{ env.HTTPSEND_VERSION }}.dockers.tar.gz
       - name: Save dockers as artifacts
         uses: actions/upload-artifact@v3
         with:
           name: dockers
-          path: iris-httpsend-module/results/iris-httpsend-${{ env.HTTPSEND_VERSION }}.dockers.tar.gz
+          path: artifacts/iris-httpsend-${{ env.HTTPSEND_VERSION }}.dockers.tar.gz
           if-no-files-found: error
           retention-days: 2
       - name: Release
@@ -41,5 +40,5 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            iris-httpsend-module/results/iris-httpsend-${{ env.HTTPSEND_VERSION }}.dockers.tar.gz
+            artifacts/iris-httpsend-${{ env.HTTPSEND_VERSION }}.dockers.tar.gz
           fail_on_unmatched_files: true

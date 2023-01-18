@@ -51,10 +51,10 @@ jobs:
           docker build --tag iris-web_db docker/db
           docker build --build-arg NGINX_CONF_GID=1234 --build-arg NGINX_CONF_FILE=nginx.conf --tag iriswebapp_nginx docker/nginx
           docker build --file docker/webApp/Dockerfile --tag iriswebapp_app .
-      - name: Archive dockers
+      - name: Produce tar archive with dockers
         run: |
           docker save iris-web_db iriswebapp_nginx iriswebapp_app | gzip > iris-httpsend-${{ env.HTTPSEND_VERSION }}.dockers.tar.gz
-      - name: Archive dockers
+      - name: Archive dockers tar as artifact
         uses: actions/upload-artifact@v3
         with:
           name: dockers

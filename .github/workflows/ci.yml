@@ -19,6 +19,13 @@ jobs:
         working-directory: iris-httpsend-module
         run: |
           python setup.py bdist_wheel
+      - name: Archive iris-httpsend-module wheel
+        uses: actions/upload-artifact@v3
+        with:
+          name: iris_httpsend_module
+          path: dist/iris_httpsend_module-${{ env.HTTPSEND_VERSION }}-py3-none-any.whl
+          if-no-files-found: error
+          retention-days: 1
       - name: Check out Iris ${{ env.IRIS_VERSION }}
         uses: actions/checkout@v3
         with:
@@ -35,13 +42,13 @@ jobs:
         run: |
           mkdir artifacts
           docker save iris-web_db iriswebapp_nginx iriswebapp_app | gzip > artifacts/iris-httpsend-${{ env.HTTPSEND_VERSION }}.dockers.tar.gz
-      - name: Save dockers as artifacts
+      - name: Archive dockers
         uses: actions/upload-artifact@v3
         with:
           name: dockers
           path: artifacts/iris-httpsend-${{ env.HTTPSEND_VERSION }}.dockers.tar.gz
           if-no-files-found: error
-          retention-days: 2
+          retention-days: 1
       - name: Release
         if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v1

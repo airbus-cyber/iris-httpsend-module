@@ -15,11 +15,12 @@
 #  Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 import setuptools
+from iris_httpsend_module import VERSION
 
 
 setuptools.setup(
      name='iris_httpsend_module',
-     version='0.1.0',
+     version=VERSION,
      packages=['iris_httpsend_module'],
      author="Airbus CyberSecurity",
      description="An Iris Module that send notifications to http endpoints",

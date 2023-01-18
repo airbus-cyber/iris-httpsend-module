@@ -17,6 +17,7 @@
 from iris_interface.IrisModuleInterface import IrisModuleInterface
 from iris_interface.IrisModuleInterface import IrisModuleTypes
 import iris_interface.IrisInterfaceStatus as InterfaceStatus
+from iris_httpsend_module import VERSION
 
 _POSTLOAD_HOOKS = [
     'on_postload_case_create', 'on_postload_case_delete',
@@ -34,7 +35,7 @@ class IrisHttpSendInterface(IrisModuleInterface):
     _module_name = 'Iris Http Send'
     _module_description = 'Sends notifications to http endpoints on every postload hooks'
     _interface_version = 1.1
-    _module_version = '0.1.0'
+    _module_version = VERSION
     _pipeline_support = False
     _pipeline_info = {}
     _module_configuration = []

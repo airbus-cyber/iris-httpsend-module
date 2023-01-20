@@ -50,9 +50,9 @@ class IrisHttpSendInterface(IrisModuleInterface):
         else:
             self.log.info(f'Successfully subscribed to {hook_name} hook')
 
-    def register_hooks(self, module_identifier: int):
+    def register_hooks(self, module_id: int):
         for hook_name in _POSTLOAD_HOOKS:
-            self._register_to_hook(module_identifier, hook_name)
+            self._register_to_hook(module_id, hook_name)
 
     def hooks_handler(self, hook_name: str, hook_ui_name: str, data):
         self.log.info(f'Received {hook_name} {hook_ui_name}')

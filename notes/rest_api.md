@@ -30,6 +30,11 @@ Example:
 curl --header 'Authorization: Bearer '${API_KEY} --header 'Content-Type: application/json' --request POST --url http://127.0.0.1:8000/manage/cases/add --data '{"case_name": "Case name", "case_description": "Case description", "case_customer": 1, "case_soc_id": "" }'
 ```
 
+## Get all cases
+```
+GET /manage/cases/list
+```
+
 ## Export a case
 ```
 GET /case/export?cid={case_identifier}

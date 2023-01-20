@@ -52,11 +52,17 @@ class Iris:
         body =  {
             'case_name': name,
             'case_description': description,
-            'case_customer': 1,
+            'case_customer': customer_identifier,
             'case_soc_id': ''
         }
-        self._api.post('/manage/cases/add', body)
+        response = self._api.post('/manage/cases/add', body)
+        body = response.json()
+        return body['data']['case_id']
 
+    def export_case(self, case_identifier):
+        response = self._api.get('/case/export', query_parameters={'cid': case_identifier})
+        body = response.json()
+        return body['data']
     def get_cases_count(self):
         response = self._api.get('/manage/cases/list')
         body = response.json()

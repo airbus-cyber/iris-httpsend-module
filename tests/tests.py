@@ -45,3 +45,8 @@ class Tests(TestCase):
         customer_identifier = 1
         self._subject.create_case('case-name', 'Description', customer_identifier)
         self.assertEqual(1, self._subject.get_cases_count())
+
+    def test_export_case_should_not_fail(self):
+        case_identifier = self._subject.create_case('case-name', 'Description', 1)
+        case = self._subject.export_case(case_identifier)
+        self.assertEqual('Description', case['case']['description'])

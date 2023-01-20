@@ -28,17 +28,17 @@ class RestApi:
     def _build_url(self, path):
         return parse.urljoin(self._url, path)
 
-    def get(self, path):
+    def get(self, path, query_parameters=None):
         url = self._build_url(path)
         headers = {'Authorization': f'Bearer {self._api_key}', 'Content-Type': 'application/json'}
-        response = requests.get(url, headers=headers)
+        response = requests.get(url, headers=headers, params=query_parameters)
         print(f'GET {url} => {response.status_code}')
         return response
 
     def post(self, path, payload):
         url = self._build_url(path)
         headers = {'Authorization': f'Bearer {self._api_key}', 'Content-Type': 'application/json'}
-        response = requests.post(url, json=payload, headers=headers)
+        response = requests.post(url, headers=headers, json=payload)
         print(f'POST {url} {payload} => {response.status_code}')
         return response
 

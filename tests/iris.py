@@ -47,3 +47,17 @@ class Iris:
         response = self._api.get('api/versions')
         body = response.json()
         return body['data']['api_current']
+
+    def create_case(self, name, description, customer_identifier):
+        body =  {
+            'case_name': name,
+            'case_description': description,
+            'case_customer': 1,
+            'case_soc_id': ''
+        }
+        self._api.post('/manage/cases/add', body)
+
+    def get_cases_count(self):
+        response = self._api.get('/manage/cases/list')
+        body = response.json()
+        return len(body['data'])

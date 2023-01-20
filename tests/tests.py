@@ -22,13 +22,13 @@
 #   source ./venv/bin/activate
 #   python -m unittest --verbose
 # To execute only one test, suffix with the fully qualified test name. Example:
-#   python -m unittest test.Test.test_NAME
+#   python -m unittest tests.Tests.test_NAME
 
 from unittest import TestCase
 from iris import Iris
 
 
-class Test(TestCase):
+class Tests(TestCase):
 
     def setUp(self) -> None:
         self._subject = Iris()
@@ -40,3 +40,8 @@ class Test(TestCase):
     def test_get_api_version_should_return_expected_version(self):
         api_version = self._subject.get_api_version()
         self.assertEqual('1.0.4', api_version)
+
+    def test_create_case_should_add_a_new_case(self):
+        customer_identifier = 1
+        self._subject.create_case('case-name', 'Description', customer_identifier)
+        self.assertEqual(1, self._subject.get_cases_count())

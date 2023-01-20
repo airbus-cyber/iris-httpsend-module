@@ -32,7 +32,14 @@ class RestApi:
         url = self._build_url(path)
         headers = {'Authorization': f'Bearer {self._api_key}', 'Content-Type': 'application/json'}
         response = requests.get(url, headers=headers)
-        print('GET {} => {}'.format(url, response.status_code))
+        print(f'GET {url} => {response.status_code}')
+        return response
+
+    def post(self, path, payload):
+        url = self._build_url(path)
+        headers = {'Authorization': f'Bearer {self._api_key}', 'Content-Type': 'application/json'}
+        response = requests.post(url, json=payload, headers=headers)
+        print(f'POST {url} {payload} => {response.status_code}')
         return response
 
     def is_ready(self):

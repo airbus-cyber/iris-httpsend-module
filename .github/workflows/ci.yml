@@ -43,7 +43,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: iris-httpsend-module-wheel
-          path: source/dependencies
+          path: iris-web/source/dependencies
       - name: Build dockers
         working-directory: iris-web
         run: |

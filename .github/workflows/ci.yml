@@ -26,7 +26,7 @@ jobs:
       version: ${{ steps.get-version.outputs.version }}
 
   dockers:
-    name: Build iris dockers with iris-httpsend-module
+    name: Build iris dockers with iris-httpsend-module and run end-to-end tests
     runs-on: ubuntu-20.04
     needs: iris-httpsend-module
     env:
@@ -38,17 +38,30 @@ jobs:
         with:
           repository: dfir-iris/iris-web
           ref: ${{ env.IRIS_VERSION }}
+          path: iris-web
       - name: Download iris-httpsend-module wheel
         uses: actions/download-artifact@v3
         with:
           name: iris-httpsend-module-wheel
           path: source/dependencies
       - name: Build dockers
+        working-directory: iris-web
         run: |
           printf "\ndependencies/iris_httpsend_module-${{ env.HTTPSEND_VERSION }}-py3-none-any.whl" >> source/requirements.txt
           docker build --tag iris-web_db docker/db
           docker build --build-arg NGINX_CONF_GID=1234 --build-arg NGINX_CONF_FILE=nginx.conf --tag iriswebapp_nginx docker/nginx
           docker build --file docker/webApp/Dockerfile --tag iriswebapp_app .
+      - name: Check out iris-httpsend-module
+        uses: actions/checkout@v3
+        with:
+          path: iris-httpsend-module
+      - name: Run end-to-end tests
+        working-directory: iris-httpsend-module/tests
+        run: |
+          python -m venv venv
+          source venv/bin/activate
+          pip install -r requirements.txt
+          python -m unittest --verbose
       - name: Produce tar archive with dockers
         run: |
           docker save iris-web_db iriswebapp_nginx iriswebapp_app | gzip > iris-httpsend-${{ env.HTTPSEND_VERSION }}.dockers.tar.gz
@@ -66,28 +79,3 @@ jobs:
           files: |
             iris-httpsend-${{ env.HTTPSEND_VERSION }}.dockers.tar.gz
           fail_on_unmatched_files: true
-
-  end-to-end-tests:
-    name: Run end-to-end tests
-    runs-on: ubuntu-20.04
-    needs: [dockers, iris-httpsend-module]
-    env:
-      IRIS_VERSION: v2.0.0-beta-1
-      HTTPSEND_VERSION: ${{ needs.iris-httpsend-module.outputs.version }}
-    steps:
-      - name: Check out iris-httpsend-module
-        uses: actions/checkout@v3
-      - name: Download dockers
-        uses: actions/download-artifact@v3
-        with:
-          name: dockers
-      - name: load docker images
-        run: |
-          docker load --input iris-httpsend-${{ env.HTTPSEND_VERSION }}.dockers.tar.gz
-      - name: Run end-to-end tests
-        working-directory: tests
-        run: |
-          python -m venv venv
-          source venv/bin/activate
-          pip install -r requirements.txt
-          python -m unittest --verbose

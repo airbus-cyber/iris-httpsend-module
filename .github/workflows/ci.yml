@@ -70,7 +70,7 @@ jobs:
   end-to-end-tests:
     name: Run end-to-end tests
     runs-on: ubuntu-20.04
-    needs: dockers, iris-httpsend-module
+    needs: [dockers, iris-httpsend-module]
     env:
       IRIS_VERSION: v2.0.0-beta-1
       HTTPSEND_VERSION: ${{ needs.iris-httpsend-module.outputs.version }}

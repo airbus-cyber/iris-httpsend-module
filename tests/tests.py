@@ -14,14 +14,12 @@
 #  along with this program; if not, write to the Free Software Foundation,
 #  Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-# to create and populate the test venv:
-# * python -m venv venv
-# * source venv/bin/activate
-# * pip install -r requirements.txt
-# to execute these tests:
-# * activate venv
+# To create and populate the test venv:
+#   python -m venv venv
+#   source venv/bin/activate
+#   pip install -r requirements.txt
+# To activate venv and execute these tests:
 #   source ./venv/bin/activate
-# * execute tests
 #   python -m unittest --verbose
 # To execute only one test, suffix with the fully qualified test name. Example:
 #   python -m unittest test.Test.test_NAME

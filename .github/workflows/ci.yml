@@ -26,7 +26,7 @@ jobs:
       version: ${{ steps.get-version.outputs.version }}
 
   dockers:
-    name: Build iris dockers with iris-httpsend-module
+    name: Build iris dockers with iris-httpsend-module and run tests
     runs-on: ubuntu-20.04
     needs: iris-httpsend-module
     env:
@@ -49,6 +49,13 @@ jobs:
           docker build --tag iris-web_db docker/db
           docker build --build-arg NGINX_CONF_GID=1234 --build-arg NGINX_CONF_FILE=nginx.conf --tag iriswebapp_nginx docker/nginx
           docker build --file docker/webApp/Dockerfile --tag iriswebapp_app .
+      - name: Run end-to-end tests
+        working-directory: tests
+        run: |
+          python -m venv venv
+          source venv/bin/activate
+          pip install -r requirements.txt
+          python -m unittest --verbose
       - name: Produce tar archive with dockers
         run: |
           docker save iris-web_db iriswebapp_nginx iriswebapp_app | gzip > iris-httpsend-${{ env.HTTPSEND_VERSION }}.dockers.tar.gz

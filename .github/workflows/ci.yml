@@ -62,7 +62,7 @@ jobs:
           python -m venv venv
           source venv/bin/activate
           pip install -r requirements.txt
-          python -m unittest --verbose
+          python -u -m unittest --verbose
       - name: Produce tar archive with dockers
         run: |
           docker save iris-web_db iriswebapp_nginx iriswebapp_app | gzip > iris-httpsend-${{ env.HTTPSEND_VERSION }}.dockers.tar.gz

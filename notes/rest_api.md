@@ -25,6 +25,10 @@ GET /api/versions
 ```
 POST /manage/cases/add {"case_name": "Case name", "case_description": "Case description", "case_customer": <customer_identifier:int>, "case_soc_id": "" }
 ```
+Example:
+```
+curl --header 'Authorization: Bearer '${API_KEY} --header 'Content-Type: application/json' --request POST --url http://127.0.0.1:8000/manage/cases/add --data '{"case_name": "Case name", "case_description": "Case description", "case_customer": 1, "case_soc_id": "" }'
+```
 
 ## Export a case
 ```

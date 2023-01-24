@@ -1,0 +1,61 @@
+# Setting up a ldap service
+
+```
+  opendldap:
+    image: bitnami/openldap:2
+    networks:
+      - iris_frontend
+    ports:
+      - '1389:1389'
+    container_name: iris_ldap
+    environment:
+      - LDAP_ADMIN_USERNAME=admin
+      - LDAP_ADMIN_PASSWORD=adminpassword
+      - LDAP_USERS=administrator,user1,user2
+      - LDAP_PASSWORDS=password0,password1,password2
+```
+
+To check ldap is up and running
+* from the host
+```
+apt install ldap-utils
+ldapsearch -H ldap://127.0.01:1389 -b "dc=example,dc=org" -D "cn=admin,dc=example,dc=org" -w adminpassword
+```
+
+* from the docker
+```
+docker exec -ti iriswebapp_app /bin/bash
+apt install ldap-utils
+ldapsearch -H ldap://iris_ldap:1389 -b "dc=example,dc=org" -D "cn=admin,dc=example,dc=org" -w adminpassword
+```
+
+* with python from the docker
+```
+from ldap3 import Server
+from ldap3 import Connection
+server = Server('ldap://iris_ldap:1389')
+c = Connection(server, user="cn=user1,ou=users,dc=example,dc=org", password="password1")
+c.bind()    # should be True
+```
+
+
+# Iris LDAP configuration
+
+```
+IRIS_AUTHENTICATION_TYPE=ldap
+LDAP_SERVER=iris_ldap
+LDAP_AUTHENTICATION_TYPE=SIMPLE
+LDAP_PORT=1389
+LDAP_USER_PREFIX=cn=
+LDAP_USER_SUFFIX=ou=users,dc=example,dc=org
+LDAP_USE_SSL=False
+```
+
+# Notes
+
+* there is no official documentation yet
+* variable `LDAP_AUTHENTICATION_TYPE` is not present in the .env.model
+* the user `administrator` must necessarily be present in the ldap
+* except for `administrator` users must be manually created in Iris before login
+* when creating users, a password must be set. Even though it is not necessary with ldap
+

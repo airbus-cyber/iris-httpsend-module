@@ -56,6 +56,7 @@ LDAP_USE_SSL=False
 * there is no official documentation yet
 * variable `LDAP_AUTHENTICATION_TYPE` is not present in the .env.model
 * the user `administrator` must necessarily be present in the ldap
-* except for `administrator` users must be manually created in Iris before login
+* except for `administrator`, all users must be manually created in Iris before login.
+  This should be possible using the REST API through the [add user endpoint](https://docs.dfir-iris.org/_static/iris_api_reference_v1.0.3.html#operation/post-manage-users-add).
 * when creating users, a password must be set. Even though it is not necessary with ldap
 

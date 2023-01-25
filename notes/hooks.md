@@ -6,10 +6,13 @@
 
 ## Case
 
-| hook name               | data type |
-|:------------------------|-----------|
-| on_postload_case_create | ? list    |
-| on_postload_case_delete | ?         |
+| hook name               | data type                                  |
+|:------------------------|--------------------------------------------|
+| on_postload_case_create | app.models.cases.Cases list (of 1 element) |
+| on_postload_case_delete | ?                                          |
+
+Note: `on_postload_case_delete` does not seem to call the module `hooks_handler` method.
+Maybe because the object is already removed from the database?
 
 ## Asset
 | hook name                | data type |

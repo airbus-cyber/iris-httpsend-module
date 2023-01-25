@@ -57,6 +57,11 @@ class IrisHttpSendInterface(IrisModuleInterface):
     def hooks_handler(self, hook_name: str, hook_ui_name: str, data):
         self.log.info(f'Received {hook_name} {hook_ui_name}')
         self.log.info(f'Received data of type {type(data)}')
+        if isinstance(data, list):
+            length = len(data)
+            self.log.info(f'Received data is a list with {length} element(s)')
+            if length > 0:
+                self.log.info(f'First element has type type {type(data[0])}')
 
         return InterfaceStatus.I2Success(data=data, logs=list(self.message_queue))
 

@@ -18,6 +18,7 @@ from iris_interface.IrisModuleInterface import IrisModuleInterface
 from iris_interface.IrisModuleInterface import IrisModuleTypes
 import iris_interface.IrisInterfaceStatus as InterfaceStatus
 from iris_httpsend_module import VERSION
+from app.schema.marshables import CaseSchema
 
 _POSTLOAD_HOOKS = [
     'on_postload_case_create', 'on_postload_case_delete',
@@ -62,6 +63,12 @@ class IrisHttpSendInterface(IrisModuleInterface):
             self.log.info(f'Received data is a list with {length} element(s)')
             if length > 0:
                 self.log.info(f'First element has type type {type(data[0])}')
+                self.log.info(f'Printing content: {data[0]}')
+
+        for element in data:
+            if hook_name in ['on_postload_case_create', 'on_postload_case_delete']:
+                schema = CaseSchema()
+                self.log.info(f'Trying to dump with marshables: {schema.dump(element)}')
 
         return InterfaceStatus.I2Success(data=data, logs=list(self.message_queue))
 

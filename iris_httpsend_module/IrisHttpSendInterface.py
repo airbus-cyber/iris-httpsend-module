@@ -18,7 +18,14 @@ from iris_interface.IrisModuleInterface import IrisModuleInterface
 from iris_interface.IrisModuleInterface import IrisModuleTypes
 import iris_interface.IrisInterfaceStatus as InterfaceStatus
 from iris_httpsend_module import VERSION
+import json
 from app.schema.marshables import CaseSchema
+from app.schema.marshables import CaseAssetsSchema
+from app.schema.marshables import CaseAddNoteSchema
+from app.schema.marshables import IocSchema
+from app.schema.marshables import EventSchema
+from app.schema.marshables import CaseEvidenceSchema
+from app.schema.marshables import CaseTaskSchema
 
 _POSTLOAD_HOOKS = [
     'on_postload_case_create', 'on_postload_case_delete',
@@ -31,6 +38,28 @@ _POSTLOAD_HOOKS = [
     'on_postload_report_create', 'on_postload_activities_report_create'
 ]
 
+_HOOKS_TO_SCHEMAS = {
+    'on_postload_case_create': CaseSchema(),
+    'on_postload_case_delete': CaseSchema(),
+    'on_postload_asset_create': CaseAssetsSchema(),
+    'on_postload_asset_delete': CaseAssetsSchema(),
+    'on_postload_asset_update': CaseAssetsSchema(),
+    'on_postload_note_create': CaseAddNoteSchema(),
+    'on_postload_note_delete': CaseAddNoteSchema(),
+    'on_postload_note_update': CaseAddNoteSchema(),
+    'on_postload_ioc_create': IocSchema(),
+    'on_postload_ioc_delete': IocSchema(),
+    'on_postload_ioc_update': IocSchema(),
+    'on_postload_event_create': EventSchema(),
+    'on_postload_event_delete': EventSchema(),
+    'on_postload_event_update': EventSchema(),
+    'on_postload_evidence_create': CaseEvidenceSchema(),
+    'on_postload_evidence_delete': CaseEvidenceSchema(),
+    'on_postload_evidence_update': CaseEvidenceSchema(),
+    'on_postload_task_create': CaseTaskSchema(),
+    'on_postload_task_delete': CaseTaskSchema(),
+    'on_postload_task_update': CaseTaskSchema()
+}
 
 class IrisHttpSendInterface(IrisModuleInterface):
     _module_name = 'Iris Http Send'
@@ -65,10 +94,14 @@ class IrisHttpSendInterface(IrisModuleInterface):
                 self.log.info(f'First element has type type {type(data[0])}')
                 self.log.info(f'Printing content: {data[0]}')
 
+        if hook_name not in _HOOKS_TO_SCHEMAS:
+            return InterfaceStatus.I2Success(data=data, logs=list(self.message_queue))
+
+        schema = _HOOKS_TO_SCHEMAS[hook_name]
+
         for element in data:
-            if hook_name in ['on_postload_case_create', 'on_postload_case_delete']:
-                schema = CaseSchema()
-                self.log.info(f'Trying to dump with marshables: {schema.dump(element)}')
+            element_as_dict = schema.dump(element)
+            self.log.info(f'Trying to dump with marshables: {json.dumps(element_as_dict, indent=2)}')
 
         return InterfaceStatus.I2Success(data=data, logs=list(self.message_queue))
 

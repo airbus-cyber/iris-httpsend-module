@@ -13,7 +13,7 @@ We want to build an instance of iris with another list of modules installed, reg
 
 For the time being, to have an additional module pre-installed during the build:
 * copy the module's wheel in `source/dependencies`,
-* declare it in the requirement file (`source\requirements.txt`)
+* declare it in the requirement file (`source/requirements.txt`)
 
 It would be nice to have a more legitimate way to achieve this goal.
 For instance, the docker build could accept as argument the path to an additional `requirements.txt` file.

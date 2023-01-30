@@ -42,9 +42,10 @@ class Tests(TestCase):
         self.assertEqual('1.0.4', api_version)
 
     def test_create_case_should_add_a_new_case(self):
+        case_count = self._subject.get_cases_count()
         customer_identifier = 1
         self._subject.create_case('case-name', 'Description', customer_identifier)
-        self.assertEqual(1, self._subject.get_cases_count())
+        self.assertEqual(case_count + 1, self._subject.get_cases_count())
 
     def test_export_case_should_not_fail(self):
         case_identifier = self._subject.create_case('case-name', 'Description', 1)

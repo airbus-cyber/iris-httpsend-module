@@ -29,7 +29,7 @@ For instance, via a variable in the `.env` file to specify a custom list of modu
 
 ## Activation
 
-It seems that no module is active (enabled) by default. This action can be done by the administrator via the REST API. The endpoints are:
+It seems that no module is active (enabled) by default. This action can be done by the administrator via the REST API (see https://github.com/dfir-iris/iris-web/issues/182). The endpoints are:
 ```
 | method | url                                           | body                                                            |
 |--------|-----------------------------------------------|-----------------------------------------------------------------|

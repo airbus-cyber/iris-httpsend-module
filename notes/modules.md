@@ -29,7 +29,15 @@ For instance, via a variable in the `.env` file to specify a custom list of modu
 
 ## Activation
 
-It seems that no module is active (enabled) by default. This action should be done manually by the administrator.
+It seems that no module is active (enabled) by default. This action can be done by the administrator via the REST API. The endpoints are:
+```
+| method | url                                           | body                                                            |
+|--------|-----------------------------------------------|-----------------------------------------------------------------|
+| POST   | /manage/modules/enable/<int:module_id>        | -                                                               |
+| POST   | /manage/modules/import-config/<int:module_id> | a JSON similar to the one when clicking on Export configuration |
+```
+Example:
+```
+curl --header 'Authorization: Bearer '${API_KEY} --header 'Content-Type: application/json' --request POST --url http://127.0.0.1:8000/manage/modules/enable/3
+```
 
-It would be nice to be able to specify which module should be active, or more simple for all pre-registered modules 
-to be active by default.

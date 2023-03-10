@@ -39,3 +39,12 @@ GET /manage/cases/list
 ```
 GET /case/export?cid={case_identifier}
 ```
+
+## Register a module {#register-module}
+```
+POST /manage/modules/add { "module_name": <module_name:string> }
+```
+Example:
+```
+curl --header 'Authorization: Bearer '${API_KEY} --header 'Content-Type: application/json' --request POST --url http://127.0.0.1:8000/manage/modules/add --data '{ "module_name": "iris_httpsend_module" }'
+```

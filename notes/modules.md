@@ -21,11 +21,10 @@ This would allow additional dependencies to be installed (either from a wheel or
 
 ## Registration
 
-In order to specify the list of modules to register by default, one should modify the `modules` list in 
+In order to specify the list of modules to register by default at build time, one should modify the `modules` list in 
 the `register_default_modules` method of the [post_init code](https://github.com/dfir-iris/iris-web/blob/v2.0.0-beta-3/source/app/post_init.py#L1113).
 
-It would be nice to have a more legitimate way to do this. 
-For instance, via a variable in the `.env` file to specify a custom list of modules to register.
+It is possible to register a module at execution time via the [rest api](rest_api.md#register-module).
 
 ## Activation
 

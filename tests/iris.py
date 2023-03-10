@@ -63,6 +63,7 @@ class Iris:
         response = self._api.get('/case/export', query_parameters={'cid': case_identifier})
         body = response.json()
         return body['data']
+
     def get_cases_count(self):
         response = self._api.get('/manage/cases/list')
         body = response.json()

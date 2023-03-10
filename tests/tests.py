@@ -51,3 +51,20 @@ class Tests(TestCase):
         case_identifier = self._subject.create_case('case-name', 'Description', 1)
         case = self._subject.export_case(case_identifier)
         self.assertEqual('Description', case['case']['description'])
+
+    def _get_module_by_human_name(self, module_human_name):
+        modules = self._subject.list_modules()
+        for module in modules:
+            if module['module_human_name'] == module_human_name:
+                return module
+        raise LookupError(f'Module {module_human_name} not found')
+
+    def test_register_module_should_not_fail(self):
+        self._subject.register_module('iris_httpsend_module')
+        module = self._get_module_by_human_name('Iris Http Send')
+        self.assertIsNotNone(module)
+
+    def test_register_module_should_enable_the_module(self):
+        self._subject.register_module('iris_httpsend_module')
+        module = self._get_module_by_human_name('Iris Http Send')
+        self.assertTrue(module['is_active'])

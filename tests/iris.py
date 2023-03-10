@@ -68,3 +68,15 @@ class Iris:
         response = self._api.get('/manage/cases/list')
         body = response.json()
         return len(body['data'])
+
+    def register_module(self, module_name):
+        body = {
+            'module_name': module_name
+        }
+        # TODO would be nice if this request would return the modules information or at least its identifier
+        self._api.post('/manage/modules/add', body)
+
+    def list_modules(self):
+        response = self._api.get('/manage/modules/list')
+        body = response.json()
+        return body['data']

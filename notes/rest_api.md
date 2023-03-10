@@ -48,3 +48,18 @@ Example:
 ```
 curl --header 'Authorization: Bearer '${API_KEY} --header 'Content-Type: application/json' --request POST --url http://127.0.0.1:8000/manage/modules/add --data '{ "module_name": "iris_httpsend_module" }'
 ```
+
+## Enable a module
+```
+POST /manage/modules/enable/{module_identifier}
+```
+
+## Configure a module
+```
+POST /manage/modules/import-config/{module_identifier} { "module_configuration": <module_configuration:json> }
+```
+The module configuration is a JSON similar to the one when clicking on export configuration.
+Example:
+```
+curl --header 'Authorization: Bearer '${API_KEY} --header 'Content-Type: application/json' --request POST --url http://127.0.0.1:8000/manage/modules/import-config/8 --data '{ "module_configuration": [{ "default": true, "mandatory": true, "param_description": "Logs every hook received if set to true. Otherwise do nothing.", "param_human_name": "Log received hook", "param_name": "check_log_received_hook", "type": "bool", "value": false }] }'
+```

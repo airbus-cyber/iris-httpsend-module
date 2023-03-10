@@ -28,15 +28,6 @@ It is possible to register a module at execution time via the [rest api](rest_ap
 
 ## Activation
 
-It seems that no module is active (enabled) by default. This action can be done by the administrator via the REST API (see https://github.com/dfir-iris/iris-web/issues/182). The endpoints are:
-
-| method | url                                           | body                                                            |
-|--------|-----------------------------------------------|-----------------------------------------------------------------|
-| POST   | /manage/modules/enable/<int:module_id>        | -                                                               |
-| POST   | /manage/modules/import-config/<int:module_id> | a JSON similar to the one when clicking on Export configuration |
-
-Example:
-```
-curl --header 'Authorization: Bearer '${API_KEY} --header 'Content-Type: application/json' --request POST --url http://127.0.0.1:8000/manage/modules/enable/3
-```
+It seems that no module is active (enabled) by default. 
+A module can be [enabled](rest_api.md#enable-a-module) and also [configured](rest_api.md#configure-a-module) by the administrator via the REST API (see https://github.com/dfir-iris/iris-web/issues/182).
 

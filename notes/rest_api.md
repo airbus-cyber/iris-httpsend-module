@@ -21,7 +21,9 @@
 ```
 GET /api/versions
 ```
-## Create a case
+
+## Cases
+### Create a case
 ```
 POST /manage/cases/add {"case_name": "Case name", "case_description": "Case description", "case_customer": <customer_identifier:int>, "case_soc_id": "" }
 ```
@@ -30,17 +32,24 @@ Example:
 curl --header 'Authorization: Bearer '${API_KEY} --header 'Content-Type: application/json' --request POST --url http://127.0.0.1:8000/manage/cases/add --data '{"case_name": "Case name", "case_description": "Case description", "case_customer": 1, "case_soc_id": "" }'
 ```
 
-## Get all cases
+### Get all cases
 ```
 GET /manage/cases/list
 ```
 
-## Export a case
+### Export a case
 ```
 GET /case/export?cid={case_identifier}
 ```
 
-## Register a module
+## Modules
+
+### List modules
+```
+GET /manage/modules/list
+```
+
+### Register a module
 ```
 POST /manage/modules/add { "module_name": <module_name:string> }
 ```
@@ -49,12 +58,12 @@ Example:
 curl --header 'Authorization: Bearer '${API_KEY} --header 'Content-Type: application/json' --request POST --url http://127.0.0.1:8000/manage/modules/add --data '{ "module_name": "iris_httpsend_module" }'
 ```
 
-## Enable a module
+### Enable a module
 ```
 POST /manage/modules/enable/{module_identifier}
 ```
 
-## Configure a module
+### Configure a module
 ```
 POST /manage/modules/import-config/{module_identifier} { "module_configuration": <module_configuration:json> }
 ```

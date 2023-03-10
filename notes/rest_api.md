@@ -40,7 +40,7 @@ GET /manage/cases/list
 GET /case/export?cid={case_identifier}
 ```
 
-## Register a module {#register-module}
+## Register a module
 ```
 POST /manage/modules/add { "module_name": <module_name:string> }
 ```

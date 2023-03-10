@@ -24,7 +24,7 @@ This would allow additional dependencies to be installed (either from a wheel or
 In order to specify the list of modules to register by default at build time, one should modify the `modules` list in 
 the `register_default_modules` method of the [post_init code](https://github.com/dfir-iris/iris-web/blob/v2.0.0-beta-3/source/app/post_init.py#L1113).
 
-It is possible to register a module at execution time via the [rest api](rest_api.md#register-module).
+It is possible to register a module at execution time via the [rest api](rest_api.md#register-a-module).
 
 ## Activation
 

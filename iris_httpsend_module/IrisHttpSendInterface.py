@@ -61,6 +61,7 @@ _HOOKS_TO_SCHEMAS = {
     'on_postload_task_update': CaseTaskSchema()
 }
 
+
 class IrisHttpSendInterface(IrisModuleInterface):
     _module_name = 'Iris Http Send'
     _module_description = 'Sends notifications to http endpoints on every postload hooks'

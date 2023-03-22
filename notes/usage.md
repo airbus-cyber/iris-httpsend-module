@@ -4,8 +4,11 @@
 * to find the administrator password
   docker-compose logs | grep create_safe_admin
 * login to https://127.0.0.1
-* to reset everything and start afresh
+* to reset everything and start afresh these commands may be usefull
+```
   docker volume prune
+  docker system prune --volumes
+```
 
 # Configuration
 

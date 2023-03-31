@@ -30,7 +30,7 @@ jobs:
     runs-on: ubuntu-20.04
     needs: iris-httpsend-module
     env:
-      IRIS_VERSION: v2.0.0-beta-3
+      IRIS_VERSION: v2.0.0
       HTTPSEND_VERSION: ${{ needs.iris-httpsend-module.outputs.version }}
     steps:
       - name: Check out Iris ${{ env.IRIS_VERSION }}

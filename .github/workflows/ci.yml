@@ -48,9 +48,7 @@ jobs:
         working-directory: iris-web
         run: |
           printf "\ndependencies/iris_httpsend_module-${{ env.HTTPSEND_VERSION }}-py3-none-any.whl" >> source/requirements.txt
-          docker build --tag iris-web_db:${{ env.HTTPSEND_VERSION }} docker/db
-          docker build --build-arg NGINX_CONF_GID=1234 --build-arg NGINX_CONF_FILE=nginx.conf --tag iriswebapp_nginx:${{ env.HTTPSEND_VERSION }} docker/nginx
-          docker build --file docker/webApp/Dockerfile --tag iriswebapp_app:${{ env.HTTPSEND_VERSION }} .
+          docker-compose --build
       - name: Check out iris-httpsend-module
         uses: actions/checkout@v3
         with:
@@ -65,7 +63,9 @@ jobs:
           python -u -m unittest --verbose
       - name: Produce tar archive with dockers
         run: |
-          docker tag iris-web_db:${{ env.HTTPSEND_VERSION }} iriswebapp_db:${{ env.HTTPSEND_VERSION }}
+          docker tag iriswebapp_db:${{ env.IRIS_VERSION }} iriswebapp_db:${{ env.HTTPSEND_VERSION }}
+          docker tag iriswebapp_nginx:${{ env.IRIS_VERSION }} iriswebapp_nginx:${{ env.HTTPSEND_VERSION }}
+          docker tag iriswebapp_app:${{ env.IRIS_VERSION }} iriswebapp_app:${{ env.HTTPSEND_VERSION }}
           docker save iriswebapp_db:${{ env.HTTPSEND_VERSION }} iriswebapp_nginx:${{ env.HTTPSEND_VERSION }} iriswebapp_app:${{ env.HTTPSEND_VERSION }} | gzip > iris-httpsend-${{ env.HTTPSEND_VERSION }}.dockers.tar.gz
       - name: Archive dockers tar as artifact
         uses: actions/upload-artifact@v3

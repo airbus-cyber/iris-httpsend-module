@@ -48,7 +48,7 @@ jobs:
         working-directory: iris-web
         run: |
           printf "\ndependencies/iris_httpsend_module-${{ env.HTTPSEND_VERSION }}-py3-none-any.whl" >> source/requirements.txt
-          docker-compose --build
+          docker-compose build
       - name: Check out iris-httpsend-module
         uses: actions/checkout@v3
         with:

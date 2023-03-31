@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 * updated DFIR-IRIS version to v2.0.0-beta-3
 * dockers are now tagged with the DFIR-IRIS version
+* renamed docker iris iris-web_db into iriswebapp_db
 
 ## [0.1.0](https://github.com/airbus-cyber/iris-httpsend-module/commits/0.1.0)
 ### Features

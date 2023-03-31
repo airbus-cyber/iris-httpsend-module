@@ -65,7 +65,8 @@ jobs:
           python -u -m unittest --verbose
       - name: Produce tar archive with dockers
         run: |
-          docker save iris-web_db iriswebapp_nginx iriswebapp_app | gzip > iris-httpsend-${{ env.HTTPSEND_VERSION }}.dockers.tar.gz
+          docker tag iris-web_db:${{ env.HTTPSEND_VERSION }} iriswebapp_db:${{ env.HTTPSEND_VERSION }}
+          docker save iriswebapp_db:${{ env.HTTPSEND_VERSION }} iriswebapp_nginx:${{ env.HTTPSEND_VERSION }} iriswebapp_app:${{ env.HTTPSEND_VERSION }} | gzip > iris-httpsend-${{ env.HTTPSEND_VERSION }}.dockers.tar.gz
       - name: Archive dockers tar as artifact
         uses: actions/upload-artifact@v3
         with:

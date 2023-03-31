@@ -6,5 +6,5 @@ It is registered on all postload hooks (except global tasks hooks) and sends htt
 The build produces docker images with plugin iris-httpsend-module preinstalled.
 To import the dockers:
 ```
-docker load --input iris-httpsend-0.1.0.dockers.tar.gz
+docker load --input iris-httpsend-${VERSION}.dockers.tar.gz
 ```

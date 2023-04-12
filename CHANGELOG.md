@@ -6,6 +6,8 @@ The format is loosely based on [Keep a Changelog](https://keepachangelog.com/en/
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
+### Features
+* added mandatory configuration parameter url
 
 ## [0.3.0](https://github.com/airbus-cyber/iris-httpsend-module/compare/0.2.0...0.3.0)
 ### Features

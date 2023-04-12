@@ -19,6 +19,7 @@ from iris_interface.IrisModuleInterface import IrisModuleTypes
 import iris_interface.IrisInterfaceStatus as InterfaceStatus
 from iris_httpsend_module import VERSION
 import json
+import requests
 from app.schema.marshables import CaseSchema
 from app.schema.marshables import CaseAssetsSchema
 from app.schema.marshables import CaseAddNoteSchema
@@ -38,27 +39,14 @@ _POSTLOAD_HOOKS = [
     'on_postload_report_create', 'on_postload_activities_report_create'
 ]
 
-_HOOKS_TO_SCHEMAS = {
-    'on_postload_case_create': CaseSchema(),
-    'on_postload_case_delete': CaseSchema(),
-    'on_postload_asset_create': CaseAssetsSchema(),
-    'on_postload_asset_delete': CaseAssetsSchema(),
-    'on_postload_asset_update': CaseAssetsSchema(),
-    'on_postload_note_create': CaseAddNoteSchema(),
-    'on_postload_note_delete': CaseAddNoteSchema(),
-    'on_postload_note_update': CaseAddNoteSchema(),
-    'on_postload_ioc_create': IocSchema(),
-    'on_postload_ioc_delete': IocSchema(),
-    'on_postload_ioc_update': IocSchema(),
-    'on_postload_event_create': EventSchema(),
-    'on_postload_event_delete': EventSchema(),
-    'on_postload_event_update': EventSchema(),
-    'on_postload_evidence_create': CaseEvidenceSchema(),
-    'on_postload_evidence_delete': CaseEvidenceSchema(),
-    'on_postload_evidence_update': CaseEvidenceSchema(),
-    'on_postload_task_create': CaseTaskSchema(),
-    'on_postload_task_delete': CaseTaskSchema(),
-    'on_postload_task_update': CaseTaskSchema()
+_HOOK_OBJECTS_TO_SCHEMAS = {
+    'case': CaseSchema(),
+    'asset': CaseAssetsSchema(),
+    'note': CaseAddNoteSchema(),
+    'ioc': IocSchema(),
+    'event': EventSchema(),
+    'evidence': CaseEvidenceSchema(),
+    'task': CaseTaskSchema(),
 }
 
 
@@ -69,7 +57,14 @@ class IrisHttpSendInterface(IrisModuleInterface):
     _module_version = VERSION
     _pipeline_support = False
     _pipeline_info = {}
-    _module_configuration = []
+    _module_configuration = [{
+        'param_name': 'url',
+        'param_human_name': 'Notification URL',
+        'param_description': 'Base URL to send notifications to',
+        'default': None,
+        'mandatory': True,
+        'type': 'string'
+    }]
     _module_type = IrisModuleTypes.module_processor
 
     def _register_to_hook(self, module_identifier, hook_name):
@@ -95,14 +90,18 @@ class IrisHttpSendInterface(IrisModuleInterface):
                 self.log.info(f'First element has type type {type(data[0])}')
                 self.log.info(f'Printing content: {data[0]}')
 
-        if hook_name not in _HOOKS_TO_SCHEMAS:
+        hook_object = hook_name.split('_')[2]
+        if hook_object not in _HOOK_OBJECTS_TO_SCHEMAS:
             return InterfaceStatus.I2Success(data=data, logs=list(self.message_queue))
 
-        schema = _HOOKS_TO_SCHEMAS[hook_name]
+        schema = _HOOK_OBJECTS_TO_SCHEMAS[hook_object]
 
+        base_url = self.module_dict_conf['url']
         for element in data:
             element_as_dict = schema.dump(element)
-            self.log.info(f'Trying to dump with marshables: {json.dumps(element_as_dict, indent=2)}')
+            url = f'{base_url}/{hook_object}'
+            self.log.info(f'Sending to {url}: {json.dumps(element_as_dict, indent=2)}')
+            requests.post(f'{url}', json=element_as_dict)
 
         return InterfaceStatus.I2Success(data=data, logs=list(self.message_queue))
 

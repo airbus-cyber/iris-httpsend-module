@@ -8,3 +8,15 @@ To import the dockers:
 ```
 docker load --input iris-httpsend-${VERSION}.dockers.tar.gz
 ```
+
+## Build
+
+To build the package:
+```
+python setup.py bdist_wheel
+```
+Then copy the wheel produced in `dist` to iris-web, directory `source/dependencies`.
+Enrich iris-web `source/requirements.txt` with the name of the wheel, and build the dockers:
+```
+docker-compose build
+```

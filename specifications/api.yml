@@ -5,24 +5,33 @@ info:
 paths:
   /case:
     post:
-      summary: Sends data of the iris hook
-      description: Information presented on data depends on the type of asset and the action performed
+      summary: Signals the creation of a new case
+      description:
       requestBody:
         required: true
         content:
           application/json:
             schema:
               type: object
+              required:
+                - case_id
               properties:
-                action:
-                  type: string
-                  enum:
-                    - create
-                    - update
-                    - delete
-                identifier:
+                case_id:
                   type: integer
                   description: Identifier of the case
+      responses:
+        "200":
+          description: Everything went fine
+    delete:
+      summary: Signals the deletion of a case
+      description:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: integer
+              description: Identifier of the case
       responses:
         "200":
           description: Everything went fine

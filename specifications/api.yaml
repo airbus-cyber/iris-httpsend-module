@@ -1,0 +1,28 @@
+openapi: 3.1.0
+info:
+  title: Specification of the API that receives data from the iris-httpsend-module
+  version: 0.1.0
+paths:
+  /case:
+    post:
+      summary: Sends data of the iris hook
+      description: Information presented on data depends on the type of asset and the action performed
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                action:
+                  type: string
+                  enum:
+                    - create
+                    - update
+                    - delete
+                identifier:
+                  type: string
+                  description: Identifier of the case
+      responses:
+        "200":
+          description: Everything went fine

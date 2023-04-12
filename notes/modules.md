@@ -3,6 +3,8 @@
 
 * when overriding a method of `IrisModuleInterface`, parameters' names must conform their parent's prototype. 
   For instance, parameter of `register_hooks` should be called `module_id`
+* these are some possible types that can be used in the description of module configuration fields:
+  `bool`, `float`, `string`, `sensitive_string`, `textfield_json` and `textfield_html`
 
 # Build and deployment
 

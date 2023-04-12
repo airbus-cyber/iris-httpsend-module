@@ -21,7 +21,7 @@ paths:
                     - update
                     - delete
                 identifier:
-                  type: string
+                  type: integer
                   description: Identifier of the case
       responses:
         "200":

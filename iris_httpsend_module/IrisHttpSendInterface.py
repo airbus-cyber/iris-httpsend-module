@@ -101,7 +101,10 @@ class IrisHttpSendInterface(IrisModuleInterface):
             element_as_dict = schema.dump(element)
             url = f'{base_url}/{hook_object}'
             self.log.info(f'Sending to {url}: {json.dumps(element_as_dict, indent=2)}')
-            requests.post(f'{url}', json=element_as_dict)
+            response = requests.post(f'{url}', json=element_as_dict)
+            self.log.info(f'Server returned: {response.status_code}')
+            if response.text:
+                self.log.info(f'Server answered: {response.json()}')
 
         return InterfaceStatus.I2Success(data=data, logs=list(self.message_queue))
 

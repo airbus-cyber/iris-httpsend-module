@@ -38,6 +38,25 @@ c = Connection(server, user="cn=user1,ou=users,dc=example,dc=org", password="pas
 c.bind()    # should be True
 ```
 
+## Fill ldap from a .ldif file
+
+We may want to instead fill the ldap with a .ldif file. This is useful, for instance, to be able to set a mail and displayName to users.
+```
+  opendldap:
+    image: bitnami/openldap:2
+    networks:
+      - iris_frontend
+    ports:
+      - '1389:1389'
+    container_name: iris_ldap
+    environment:
+      - LDAP_ADMIN_USERNAME=admin
+      - LDAP_ADMIN_PASSWORD=adminpassword
+    volumes:
+      - ./ldifs:/ldifs
+```
+
+The local `ldifs` directory contains the .ldif file that will be loaded. See [users.ldif](users.ldif) for an example.
 
 # Iris LDAP configuration
 

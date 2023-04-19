@@ -57,6 +57,19 @@ We may want to instead fill the ldap with a .ldif file. This is useful, for inst
 ```
 
 The local `ldifs` directory contains the .ldif file that will be loaded. See [users.ldif](users.ldif) for an example.
+Then to retrieve the mail and displayName attributes with python:
+```
+from ldap3 import Server
+from ldap3 import Connection
+server = Server('ldap://iris_ldap:1389')
+c = Connection(server, user="cn=user1,ou=users,dc=example,dc=org", password="password1")
+c.bind()
+c.search('cn=user1,ou=users,dc=example,dc=org', '(objectClass=*)', attributes=['mail', 'displayName'])
+entry = c.entries[0]
+display_name = entry['displayName']
+mail = entry['mail']
+print(f'Found user "{display_name}" with email "{mail}"')
+```
 
 # Iris LDAP configuration
 

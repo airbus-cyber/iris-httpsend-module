@@ -19,7 +19,7 @@ To check ldap is up and running
 * from the host
 ```
 apt install ldap-utils
-ldapsearch -H ldap://127.0.01:1389 -b "dc=example,dc=org" -D "cn=admin,dc=example,dc=org" -w adminpassword
+ldapsearch -H ldap://127.0.0.1:1389 -b "dc=example,dc=org" -D "cn=admin,dc=example,dc=org" -w adminpassword
 ```
 
 * from the docker

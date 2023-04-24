@@ -63,6 +63,3 @@ member: cn=administrator,ou=users,dc=example,dc=org
 member: cn=user1,ou=users,dc=example,dc=org
 member: cn=user2,ou=users,dc=example,dc=org
 
-
-
-

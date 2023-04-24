@@ -66,8 +66,8 @@ c = Connection(server, user="cn=user1,ou=users,dc=example,dc=org", password="pas
 c.bind()
 c.search('cn=user1,ou=users,dc=example,dc=org', '(objectClass=*)', attributes=['mail', 'displayName'])
 entry = c.entries[0]
-display_name = entry['displayName']
-mail = entry['mail']
+display_name = entry['displayName'].value
+mail = entry['mail'].value
 print(f'Found user "{display_name}" with email "{mail}"')
 ```
 

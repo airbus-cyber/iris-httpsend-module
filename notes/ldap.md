@@ -62,7 +62,7 @@ Then to retrieve the mail and displayName attributes with python:
 from ldap3 import Server
 from ldap3 import Connection
 server = Server('ldap://iris_ldap:1389')
-c = Connection(server, user="cn=user1,ou=users,dc=example,dc=org", password="password1")
+c = Connection(server, user='cn=user1,ou=users,dc=example,dc=org', password='password1')
 c.bind()
 c.search('cn=user1,ou=users,dc=example,dc=org', '(objectClass=*)', attributes=['mail', 'displayName'])
 entry = c.entries[0]

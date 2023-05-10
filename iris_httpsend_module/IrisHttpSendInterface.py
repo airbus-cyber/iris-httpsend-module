@@ -92,7 +92,8 @@ class IrisHttpSendInterface(IrisModuleInterface):
 
         hook_object = hook_name.split('_')[2]
         if hook_object not in _HOOK_OBJECTS_TO_SCHEMAS:
-            return InterfaceStatus.I2Success(data=data, logs=list(self.message_queue))
+            self.log.error(f'Unexpected hook object {hook_object}. Not Sending...')
+            return InterfaceStatus.I2Error(data=data, logs=list(self.message_queue))
 
         schema = _HOOK_OBJECTS_TO_SCHEMAS[hook_object]
 

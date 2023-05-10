@@ -95,19 +95,20 @@ class IrisHttpSendInterface(IrisModuleInterface):
             raise ValueError(message)
         return result
 
-    def _notify_create_element(self, element, url):
-        self.log.info(f'Sending create notification to {url}: {json.dumps(element, indent=2)}')
+    def _notify_create_element(self, url, element):
+        self.log.info(f'Sending POST {url} {json.dumps(element, indent=2)}')
         return requests.post(f'{url}', json=element)
 
-    def _notify_delete_element(self, element, url):
-        self.log.info(f'Sending delete notification to {url}: {json.dumps(element, indent=2)}')
-        return requests.delete(f'{url}', json=element)
+    def _notify_delete_element(self, base_url, identifier):
+        url = f'{base_url}/{identifier}'
+        self.log.info(f'Sending DELETE {url}')
+        return requests.delete(url)
 
     def _notify_element(self, hook_action, element, url):
         if hook_action == 'create':
-            response = self._notify_create_element(element, url)
+            response = self._notify_create_element(url, element)
         else:
-            response = self._notify_delete_element(element, url)
+            response = self._notify_delete_element(url, element)
         self.log.info(f'Server returned: {response.status_code}')
         if response.text:
             self.log.info(f'Server answered: {response.json()}')

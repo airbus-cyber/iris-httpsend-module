@@ -5,7 +5,7 @@ info:
 paths:
   /case:
     post:
-      summary: Signals the creation of a new case
+      summary: Signals creation of a new case
       description:
       requestBody:
         required: true
@@ -22,16 +22,54 @@ paths:
       responses:
         "200":
           description: Everything went fine
+  /case/{identifier}:
     delete:
-      summary: Signals the deletion of a case
+      summary: Signals deletion of a case
+      description:
+      parameters:
+        - name: identifier
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Identifier of the case
+      responses:
+        "200":
+          description: Everything went fine
+  /asset:
+    post:
+      summary: Signals creation of a new asset
       description:
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: integer
-              description: Identifier of the case
+              type: object
+              required:
+                - case_id
+                - asset_id
+              properties:
+                case_id:
+                  type: integer
+                  description: Identifier of the case
+                asset_id:
+                  type: integer
+                  description: Identifier of the asset
+      responses:
+        "200":
+          description: Everything went fine
+  /asset/{identifier}:
+    delete:
+      summary: Signals deletion of an asset
+      description:
+      parameters:
+        - name: identifier
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Identifier of the case
       responses:
         "200":
           description: Everything went fine

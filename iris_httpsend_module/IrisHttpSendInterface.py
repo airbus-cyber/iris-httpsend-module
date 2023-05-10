@@ -87,6 +87,19 @@ class IrisHttpSendInterface(IrisModuleInterface):
         if response.text:
             self.log.info(f'Server answered: {response.json()}')
 
+    def _handle_hook(self, hook_name: str, data):
+        hook_object = hook_name.split('_')[2]
+        if hook_object not in _HOOK_OBJECTS_TO_SCHEMAS:
+            self.log.error(f'Unexpected hook object {hook_object}. Not Sending...')
+            raise ValueError(f'Unexpected hook object.')
+
+        schema = _HOOK_OBJECTS_TO_SCHEMAS[hook_object]
+
+        base_url = self.module_dict_conf['url']
+        url = f'{base_url}/{hook_object}'
+        for element in data:
+            self._notify_create_element(schema, element, url)
+
     def hooks_handler(self, hook_name: str, hook_ui_name: str, data):
         self.log.info(f'Received {hook_name} {hook_ui_name}')
         self.log.info(f'Received data of type {type(data)}')
@@ -97,17 +110,9 @@ class IrisHttpSendInterface(IrisModuleInterface):
                 self.log.info(f'First element has type type {type(data[0])}')
                 self.log.info(f'Printing content: {data[0]}')
 
-        hook_object = hook_name.split('_')[2]
-        if hook_object not in _HOOK_OBJECTS_TO_SCHEMAS:
-            self.log.error(f'Unexpected hook object {hook_object}. Not Sending...')
+        try:
+            self._handle_hook(hook_name, data)
+            return InterfaceStatus.I2Success(data=data, logs=list(self.message_queue))
+        except ValueError:
             return InterfaceStatus.I2Error(data=data, logs=list(self.message_queue))
-
-        schema = _HOOK_OBJECTS_TO_SCHEMAS[hook_object]
-
-        base_url = self.module_dict_conf['url']
-        url = f'{base_url}/{hook_object}'
-        for element in data:
-            self._notify_create_element(schema, element, url)
-
-        return InterfaceStatus.I2Success(data=data, logs=list(self.message_queue))
 

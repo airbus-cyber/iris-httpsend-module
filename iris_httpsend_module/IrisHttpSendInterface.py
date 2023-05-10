@@ -80,29 +80,51 @@ class IrisHttpSendInterface(IrisModuleInterface):
             self._register_to_hook(module_id, hook_name)
 
     def _parse_hook_object(self, hook_name):
-        hook_object = hook_name.split('_')[2]
-        if hook_object not in _HOOK_OBJECTS_TO_SCHEMAS:
-            self.log.error(f'Unexpected hook object {hook_object}. Not Sending...')
-            raise ValueError(f'Unexpected hook object.')
-        return hook_object
+        result = hook_name.split('_')[2]
+        if result not in _HOOK_OBJECTS_TO_SCHEMAS:
+            message = f'Unexpected hook object {result}.'
+            self.log.error(message)
+            raise ValueError(message)
+        return result
 
-    def _notify_create_element(self, schema, element, url):
-        element_as_dict = schema.dump(element)
-        self.log.info(f'Sending create notification to {url}: {json.dumps(element_as_dict, indent=2)}')
-        response = requests.post(f'{url}', json=element_as_dict)
+    def _parse_hook_action(self, hook_name):
+        result = hook_name.split('_')[3]
+        if result not in ['create', 'delete', 'update']:
+            message = f'Unexpected hook action {result}.'
+            self.log.error(message)
+            raise ValueError(message)
+        return result
+
+    def _notify_create_element(self, element, url):
+        self.log.info(f'Sending create notification to {url}: {json.dumps(element, indent=2)}')
+        return requests.post(f'{url}', json=element)
+
+    def _notify_delete_element(self, element, url):
+        self.log.info(f'Sending delete notification to {url}: {json.dumps(element, indent=2)}')
+        return requests.delete(f'{url}', json=element)
+
+    def _notify_element(self, hook_action, element, url):
+        if hook_action == 'create':
+            response = self._notify_create_element(element, url)
+        else:
+            response = self._notify_delete_element(element, url)
         self.log.info(f'Server returned: {response.status_code}')
         if response.text:
             self.log.info(f'Server answered: {response.json()}')
 
     def _handle_hook(self, hook_name: str, data):
         hook_object = self._parse_hook_object(hook_name)
+        hook_action = self._parse_hook_action(hook_name)
 
         schema = _HOOK_OBJECTS_TO_SCHEMAS[hook_object]
 
         base_url = self.module_dict_conf['url']
         url = f'{base_url}/{hook_object}'
         for element in data:
-            self._notify_create_element(schema, element, url)
+            # In case of delete we get an int here (the identifier), otherwise it is some object
+            if hook_action != 'delete':
+                element = schema.dump(element)
+            self._notify_element(hook_action, element, url)
 
     def hooks_handler(self, hook_name: str, hook_ui_name: str, data):
         self.log.info(f'Received {hook_name} {hook_ui_name}')

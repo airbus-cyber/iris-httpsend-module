@@ -9,7 +9,7 @@
 | hook name               | data type                   |
 |:------------------------|-----------------------------|
 | on_postload_case_create | app.models.cases.Cases list |
-| on_postload_case_delete | ?                           |
+| on_postload_case_delete | int list                    |
 
 Note: `on_postload_case_delete` does not seem to call the module `hooks_handler` method.
 Maybe because the object is already removed from the database?

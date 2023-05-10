@@ -36,7 +36,6 @@ _POSTLOAD_HOOKS = [
     'on_postload_event_create', 'on_postload_event_delete', 'on_postload_event_update',
     'on_postload_evidence_create', 'on_postload_evidence_delete', 'on_postload_evidence_update',
     'on_postload_task_create', 'on_postload_task_delete', 'on_postload_task_update',
-    'on_postload_report_create', 'on_postload_activities_report_create'
 ]
 
 _HOOK_OBJECTS_TO_SCHEMAS = {

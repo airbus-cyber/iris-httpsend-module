@@ -80,6 +80,14 @@ class IrisHttpSendInterface(IrisModuleInterface):
         for hook_name in _POSTLOAD_HOOKS:
             self._register_to_hook(module_id, hook_name)
 
+    def _notify_create_element(self, schema, element, url):
+        element_as_dict = schema.dump(element)
+        self.log.info(f'Sending create notification to {url}: {json.dumps(element_as_dict, indent=2)}')
+        response = requests.post(f'{url}', json=element_as_dict)
+        self.log.info(f'Server returned: {response.status_code}')
+        if response.text:
+            self.log.info(f'Server answered: {response.json()}')
+
     def hooks_handler(self, hook_name: str, hook_ui_name: str, data):
         self.log.info(f'Received {hook_name} {hook_ui_name}')
         self.log.info(f'Received data of type {type(data)}')
@@ -98,14 +106,9 @@ class IrisHttpSendInterface(IrisModuleInterface):
         schema = _HOOK_OBJECTS_TO_SCHEMAS[hook_object]
 
         base_url = self.module_dict_conf['url']
+        url = f'{base_url}/{hook_object}'
         for element in data:
-            element_as_dict = schema.dump(element)
-            url = f'{base_url}/{hook_object}'
-            self.log.info(f'Sending to {url}: {json.dumps(element_as_dict, indent=2)}')
-            response = requests.post(f'{url}', json=element_as_dict)
-            self.log.info(f'Server returned: {response.status_code}')
-            if response.text:
-                self.log.info(f'Server answered: {response.json()}')
+            self._notify_create_element(schema, element, url)
 
         return InterfaceStatus.I2Success(data=data, logs=list(self.message_queue))
 

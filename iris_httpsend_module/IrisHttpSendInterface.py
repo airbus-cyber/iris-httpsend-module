@@ -79,6 +79,13 @@ class IrisHttpSendInterface(IrisModuleInterface):
         for hook_name in _POSTLOAD_HOOKS:
             self._register_to_hook(module_id, hook_name)
 
+    def _parse_hook_object(self, hook_name):
+        hook_object = hook_name.split('_')[2]
+        if hook_object not in _HOOK_OBJECTS_TO_SCHEMAS:
+            self.log.error(f'Unexpected hook object {hook_object}. Not Sending...')
+            raise ValueError(f'Unexpected hook object.')
+        return hook_object
+
     def _notify_create_element(self, schema, element, url):
         element_as_dict = schema.dump(element)
         self.log.info(f'Sending create notification to {url}: {json.dumps(element_as_dict, indent=2)}')
@@ -88,10 +95,7 @@ class IrisHttpSendInterface(IrisModuleInterface):
             self.log.info(f'Server answered: {response.json()}')
 
     def _handle_hook(self, hook_name: str, data):
-        hook_object = hook_name.split('_')[2]
-        if hook_object not in _HOOK_OBJECTS_TO_SCHEMAS:
-            self.log.error(f'Unexpected hook object {hook_object}. Not Sending...')
-            raise ValueError(f'Unexpected hook object.')
+        hook_object = self._parse_hook_object(hook_name)
 
         schema = _HOOK_OBJECTS_TO_SCHEMAS[hook_object]
 

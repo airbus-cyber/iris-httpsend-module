@@ -12,13 +12,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              required:
-                - case_id
-              properties:
-                case_id:
-                  type: integer
-                  description: Identifier of the case
+              $ref: "#/components/schemas/case"
       responses:
         "200":
           description: Everything went fine
@@ -93,3 +87,45 @@ paths:
       responses:
         "200":
           description: Everything went fine
+components:
+  schemas:
+    case:
+      type: object
+      required:
+        - case_id
+        - case_name
+        - case_description
+        - case_customer
+        - case_soc_id
+        - user_id
+        - open_date
+      properties:
+        case_id:
+          type: integer
+          description: Identifier of the case
+        case_name:
+          type: string
+          minLength: 1
+        case_description:
+          type: string
+          minLength: 1
+        case_customer:
+          type: number
+        case_soc_id:
+          type: string
+          minLength: 1
+        user_id:
+          type: number
+        open_date:
+          type: string
+        close_date:
+          type: string
+      x-examples:
+        case_id: 97
+        case_name: ""#97 - my_case_api"
+        case_description: "a description"
+        case_customer: 1
+        case_soc_id: "156516"
+        user_id: 4
+        open_date: "2021-10-21"
+        close_date: null

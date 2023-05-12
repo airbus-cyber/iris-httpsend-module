@@ -18,16 +18,26 @@ Example data:
 ```json
 {
   "status_id": 0,
+  "owner_id": 1,
+  "user_id": 1,
+  "closing_note": null,
+  "case_name": "#4 - AA",
   "close_date": null,
-  "case_soc_id": "",
-  "case_name": "#2 - Name",
+  "case_description": "BB",
+  "classification_id": 8,
+  "case_customer": 1,
+  "modification_history": {
+    "1683871842.666619": {
+      "user": "administrator",
+      "user_id": 1,
+      "action": "created"
+    }
+  },
+  "case_id": 2,
+  "open_date": "2023-01-27",
   "case_uuid": "32396d24-fdcc-4da0-a660-d4f2e5c91ce1",
   "custom_attributes": {},
-  "open_date": "2023-01-27",
-  "case_customer": 1,
-  "user_id": 1,
-  "case_description": "Description",
-  "case_id": 2
+  "case_soc_id": ""
 }
 ```
 

@@ -38,17 +38,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              required:
-                - case_id
-                - asset_id
-              properties:
-                case_id:
-                  type: integer
-                  description: Identifier of the case
-                asset_id:
-                  type: integer
-                  description: Identifier of the asset
+              $ref: "#/components/schemas/asset"
       responses:
         "200":
           description: Everything went fine
@@ -60,17 +50,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              required:
-                - case_id
-                - asset_id
-              properties:
-                case_id:
-                  type: integer
-                  description: Identifier of the case
-                asset_id:
-                  type: integer
-                  description: Identifier of the asset
+              $ref: "#/components/schemas/asset"
       responses:
         "200":
           description: Everything went fine
@@ -105,27 +85,41 @@ components:
           description: Identifier of the case
         case_name:
           type: string
-          minLength: 1
         case_description:
           type: string
-          minLength: 1
+        classification_id:
+          type: integer
+          nullable: true
         case_customer:
           type: number
         case_soc_id:
           type: string
-          minLength: 1
         user_id:
           type: number
         open_date:
           type: string
         close_date:
           type: string
+          nullable: true
       x-examples:
         case_id: 97
         case_name: ""#97 - my_case_api"
         case_description: "a description"
+        classification_id: 8
         case_customer: 1
         case_soc_id: "156516"
         user_id: 4
         open_date: "2021-10-21"
         close_date: null
+    asset:
+      type: object
+      required:
+        - case_id
+        - asset_id
+      properties:
+        case_id:
+          type: integer
+          description: Identifier of the case
+        asset_id:
+          type: integer
+          description: Identifier of the asset

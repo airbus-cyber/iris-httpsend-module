@@ -39,7 +39,7 @@ class Tests(TestCase):
 
     def test_get_api_version_should_return_expected_version(self):
         api_version = self._subject.get_api_version()
-        self.assertEqual('2.0.0', api_version)
+        self.assertEqual('2.0.1', api_version)
 
     def test_create_case_should_add_a_new_case(self):
         case_count = self._subject.get_cases_count()

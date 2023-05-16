@@ -14,27 +14,34 @@
 #  along with this program; if not, write to the Free Software Foundation,
 #  Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
+import tempfile
+import shutil
 import time
+from pathlib import Path
 from rest_api import RestApi
 from docker_compose import DockerCompose
 
 _API_URL = 'http://127.0.0.1:8000'
 # Assumes iris docker-compose file is started with a .env file which defines IRIS_ADM_API_KEY with this value
 _API_KEY = 'B8BA5D730210B50F41C06941582D7965D57319D5685440587F98DFDC45A01594'
-_DOCKER_COMPOSE_PATH = '../../iris-web'
+_IRIS_PATH = '../../iris-web'
 
 
 class Iris:
 
     def __init__(self):
+        self._working_directory = tempfile.TemporaryDirectory(prefix='iris_', dir='.')
+        self._docker_compose_path = Path(self._working_directory.name).joinpath('iris')
         self._api = RestApi(_API_URL, _API_KEY)
-        self._docker_compose = DockerCompose(_DOCKER_COMPOSE_PATH)
+        self._docker_compose = DockerCompose(self._docker_compose_path)
 
     def _wait_until_api_is_ready(self):
         while not self._api.is_ready():
             time.sleep(1)
 
     def start(self):
+        shutil.copytree(_IRIS_PATH, self._docker_compose_path)
+        shutil.copy2('./data/tests.env', self._docker_compose_path.joinpath('.env'))
         self._docker_compose.start()
         # TODO would be nicer if there were a way to be notified by the docker once it is ready to take incoming requests
         print('Waiting for DFIR-IRIS to start...')
@@ -42,6 +49,7 @@ class Iris:
 
     def stop(self):
         self._docker_compose.stop()
+        self._working_directory.cleanup()
 
     def get_api_version(self):
         response = self._api.get('api/versions')

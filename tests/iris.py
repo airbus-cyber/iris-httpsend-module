@@ -41,7 +41,7 @@ class Iris:
 
     def start(self):
         shutil.copytree(_IRIS_PATH, self._docker_compose_path)
-        shutil.copy2('./data/tests.env', self._docker_compose_path.joinpath('.env'))
+        shutil.copy2('data/basic.env', self._docker_compose_path.joinpath('.env'))
         self._docker_compose.start()
         # TODO would be nicer if there were a way to be notified by the docker once it is ready to take incoming requests
         print('Waiting for DFIR-IRIS to start...')

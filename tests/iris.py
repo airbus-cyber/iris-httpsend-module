@@ -49,7 +49,7 @@ class Iris:
         return body['data']['api_current']
 
     def create_case(self, name, description, customer_identifier):
-        body =  {
+        body = {
             'case_name': name,
             'case_description': description,
             'case_customer': customer_identifier,

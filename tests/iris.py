@@ -25,13 +25,16 @@ _API_URL = 'http://127.0.0.1:8000'
 # Assumes iris docker-compose file is started with a .env file which defines IRIS_ADM_API_KEY with this value
 _API_KEY = 'B8BA5D730210B50F41C06941582D7965D57319D5685440587F98DFDC45A01594'
 _IRIS_PATH = '../../iris-web'
+_TEST_DATA_PATH = Path('./data')
 
 
 class Iris:
 
-    def __init__(self):
+    def __init__(self, env_file, additional_docker_compose=None):
         self._working_directory = tempfile.TemporaryDirectory(prefix='iris_', dir='.')
         self._docker_compose_path = Path(self._working_directory.name).joinpath('iris')
+        self._env_file = env_file
+        self._additional_docker_compose = additional_docker_compose
         self._api = RestApi(_API_URL, _API_KEY)
         self._docker_compose = DockerCompose(self._docker_compose_path)
 
@@ -41,7 +44,9 @@ class Iris:
 
     def start(self):
         shutil.copytree(_IRIS_PATH, self._docker_compose_path)
-        shutil.copy2('data/basic.env', self._docker_compose_path.joinpath('.env'))
+        shutil.copy2(_TEST_DATA_PATH.joinpath(self._env_file), self._docker_compose_path.joinpath('.env'))
+        if self._additional_docker_compose is not None:
+            shutil.copy2(_TEST_DATA_PATH.joinpath(self._additional_docker_compose), self._docker_compose_path.joinpath('docker-compose.override.yml'))
         self._docker_compose.start()
         # TODO would be nicer if there were a way to be notified by the docker once it is ready to take incoming requests
         print('Waiting for DFIR-IRIS to start...')

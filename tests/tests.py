@@ -31,7 +31,7 @@ from iris import Iris
 class Tests(TestCase):
 
     def setUp(self) -> None:
-        self._subject = Iris()
+        self._subject = Iris('basic.env')
         self._subject.start()
 
     def tearDown(self) -> None:

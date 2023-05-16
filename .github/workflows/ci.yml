@@ -57,7 +57,6 @@ jobs:
       - name: Run end-to-end tests
         working-directory: iris-httpsend-module/tests
         run: |
-          cp data/tests.env ../../iris-web/.env
           python -m venv venv
           source venv/bin/activate
           pip install -r requirements.txt

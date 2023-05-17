@@ -11,4 +11,4 @@ docker-compose restart && docker-compose logs --follow
       - ./source/app:/iriswebapp/app
 ```
 
-* This can be done without modifying the original `docker-compose.yml` file by adding a `docker-compose.override.yml` file such as [this one](docker-compose.override.yml)
+* This can be done without modifying the original `docker-compose.yml` file by adding a `docker-compose.override.yml` file such as [this one](docker-compose.override.yml).

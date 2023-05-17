@@ -1,4 +1,4 @@
-# Some development tricks
+# Development tricks
 
 * To test out code modification, it is possible to hack into the running container:
 ```

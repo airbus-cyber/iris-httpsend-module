@@ -1,0 +1,33 @@
+version: "3.5"
+services:
+
+  opendldap:
+    image: bitnami/openldap:2
+    networks:
+      - iris_frontend
+    ports:
+      - '1389:1389'
+    container_name: iris_ldap
+    environment:
+      - LDAP_ADMIN_USERNAME=admin
+      - LDAP_ADMIN_PASSWORD=adminpassword
+    volumes:
+      - ./ldifs:/ldifs
+
+  httpsend-listen:
+    image: stoplight/prism:4
+    command: mock -h 0.0.0.0 /prism/api.yml
+    networks:
+      - iris_backend
+    ports:
+      - '4010:4010'
+    volumes:
+      - ./specification:/prism
+
+  app:
+    volumes:
+          - ./source/app:/iriswebapp/app
+
+  worker:
+    volumes:
+          - ./source/app:/iriswebapp/app

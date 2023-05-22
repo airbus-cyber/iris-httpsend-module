@@ -26,8 +26,8 @@ services:
 
   app:
     volumes:
-          - ./source/app:/iriswebapp/app
+      - ./source/app:/iriswebapp/app
 
   worker:
     volumes:
-          - ./source/app:/iriswebapp/app
+      - ./source/app:/iriswebapp/app

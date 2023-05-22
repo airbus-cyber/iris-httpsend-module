@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Features
 * added mandatory configuration parameter url
 * updated DFIR-IRIS version to v2.1.0
+* added a patch so that users created from ldap are automatically added to the `analyst` group
  
 
 ## [0.3.0](https://github.com/airbus-cyber/iris-httpsend-module/compare/0.2.0...0.3.0)

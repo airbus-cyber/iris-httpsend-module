@@ -103,7 +103,7 @@ components:
           nullable: true
       x-examples:
         case_id: 97
-        case_name: ""#97 - my_case_api"
+        case_name: "#97 - my_case_api"
         case_description: "a description"
         classification_id: 8
         case_customer: 1
@@ -116,6 +116,18 @@ components:
       required:
         - case_id
         - asset_id
+        - analysis_status_id
+        - asset_domain
+        - asset_info
+        - asset_description
+        - asset_tags
+        - asset_type_id
+        - asset_compromise_status_id
+        - date_update
+        - user_id
+        - asset_name
+        - date_added
+        - asset_ip
       properties:
         case_id:
           type: integer
@@ -123,3 +135,42 @@ components:
         asset_id:
           type: integer
           description: Identifier of the asset
+        analysis_status_id:
+          type: number
+        asset_domain:
+          type: string
+        asset_info:
+          type: string
+        asset_description:
+          type: string
+        asset_tags:
+          type: string
+        asset_type_id:
+          type: number
+        asset_compromise_status_id:
+          type: integer
+        date_update:
+          type: string
+        user_id:
+          type: number
+        asset_name:
+          type: string
+        date_added:
+          type: string
+        asset_ip:
+          type: string
+      x-examples:
+        case_id: 2
+        asset_id: 2208
+        analysis_status_id: 2
+        asset_domain: "My domain"
+        asset_info: "Additional info"
+        asset_description: "Asset description"
+        asset_tags: "Asset,tags"
+        asset_type_id: 1
+        asset_compromise_status_id: 0
+        date_update: "2022-01-21T17:42:37.286203"
+        user_id: 1
+        asset_name: "Asset 1"
+        date_added: "2022-01-21T17:42:37.286192"
+        asset_ip: My IP

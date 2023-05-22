@@ -69,7 +69,15 @@ Example data:
   "asset_uuid": "d65043c5-9c5d-4b5e-b501-c70f181039d8",
   "date_added": "2023-01-27T09:37:37.866655",
   "case_id": 2,
-  "asset_ip": ""
+  "asset_ip": "",
+  "asset_enrichment": null,
+  "asset_type": {
+    "asset_name": "Linux Account",
+    "asset_description": "Linux Account",
+    "asset_icon_compromised": "ioc_user.png",
+    "asset_id": 5,
+    "asset_icon_not_compromised": "user.png"
+  }
 }
 ```
 

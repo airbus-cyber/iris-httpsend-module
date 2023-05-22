@@ -44,16 +44,20 @@ jobs:
         with:
           name: iris-httpsend-module-wheel
           path: iris-web/source/dependencies
+      - name: Check out iris-httpsend-module
+        uses: actions/checkout@v3
+        with:
+          path: iris-httpsend-module
+      - name: Patch Iris
+        working-directory: iris-web
+        run: |
+          git apply ../iris-httpsend-module/patches/*.patch
       - name: Build dockers
         working-directory: iris-web
         run: |
           printf "\ndependencies/iris_httpsend_module-${{ env.HTTPSEND_VERSION }}-py3-none-any.whl" >> source/requirements.txt
           cp .env.model .env
           docker-compose build
-      - name: Check out iris-httpsend-module
-        uses: actions/checkout@v3
-        with:
-          path: iris-httpsend-module
       - name: Run end-to-end tests
         working-directory: iris-httpsend-module/tests
         run: |

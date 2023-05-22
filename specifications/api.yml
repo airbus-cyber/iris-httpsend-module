@@ -16,6 +16,18 @@ paths:
       responses:
         "200":
           description: Everything went fine
+    put:
+      summary: Signals update of a case
+      description:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/asset"
+      responses:
+        "200":
+          description: Everything went fine
     delete:
       summary: Signals deletion of a case
       description:

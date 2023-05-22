@@ -51,7 +51,7 @@ jobs:
       - name: Patch Iris
         working-directory: iris-web
         run: |
-          git apply ../iris-httpsend-module/patches/*.patch
+          git apply --verbose ../iris-httpsend-module/patches/*.patch
       - name: Build dockers
         working-directory: iris-web
         run: |

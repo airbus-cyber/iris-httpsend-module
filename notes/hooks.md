@@ -6,10 +6,11 @@
 
 ## Case
 
-| hook name               | data type                   |
-|:------------------------|-----------------------------|
-| on_postload_case_create | app.models.cases.Cases list |
-| on_postload_case_delete | int list                    |
+| hook name                    | data type                   |
+|:-----------------------------|-----------------------------|
+| on_postload_case_create      | app.models.cases.Cases list |
+| on_postload_case_delete      | int list                    |
+| on_postload_case_info_update | app.models.cases.Cases list |
 
 Note: `on_postload_case_delete` does not seem to call the module `hooks_handler` method.
 Maybe because the object is already removed from the database?
@@ -45,7 +46,7 @@ Example data:
 | hook name                | data type                         |
 |--------------------------|-----------------------------------|
 | on_postload_asset_create | app.models.models.CaseAssets list |
-| on_postload_asset_delete | ?                                 |
+| on_postload_asset_delete | int list                          |
 | on_postload_asset_update | app.models.models.CaseAssets list |
 
 Note: `on_postload_asset_delete` does not seem to call the module `hooks_handler` method. 
@@ -86,7 +87,7 @@ Example data:
 | hook name               | data type                    |
 |-------------------------|------------------------------|
 | on_postload_note_create | app.models.models.Notes list |
-| on_postload_note_delete | ?                            |
+| on_postload_note_delete | int list                     |
 | on_postload_note_update | app.models.models.Notes list |
 
 Note: `on_postload_note_delete` does not seem to call the module `hooks_handler` method.

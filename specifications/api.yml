@@ -75,7 +75,45 @@ paths:
           application/json:
             schema:
               type: integer
-              description: Identifier of the case
+              description: Identifier of the asset
+      responses:
+        "200":
+          description: Everything went fine
+  /note:
+    post:
+      summary: Signals creation of a new note
+      description:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/note"
+      responses:
+        "200":
+          description: Everything went fine
+    put:
+      summary: Signals update of an note
+      description:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/note"
+      responses:
+        "200":
+          description: Everything went fine
+    delete:
+      summary: Signals deletion of an note
+      description:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: integer
+              description: Identifier of the note
       responses:
         "200":
           description: Everything went fine
@@ -186,3 +224,20 @@ components:
         asset_name: "Asset 1"
         date_added: "2022-01-21T17:42:37.286192"
         asset_ip: My IP
+    note:
+      type: object
+      required:
+        - note_id
+        - note_content
+        - note_title
+      properties:
+        note_id:
+          type: number
+        note_content:
+          type: string
+        note_title:
+          type: string
+      x-examples:
+        note_id: 2362
+        note_title: "note title"
+        note_content: "some content"

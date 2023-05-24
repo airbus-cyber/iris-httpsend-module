@@ -117,6 +117,44 @@ paths:
       responses:
         "200":
           description: Everything went fine
+  /ioc:
+    post:
+      summary: Signals creation of a new IOC
+      description:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ioc"
+      responses:
+        "200":
+          description: Everything went fine
+    put:
+      summary: Signals update of an IOC
+      description:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ioc"
+      responses:
+        "200":
+          description: Everything went fine
+    delete:
+      summary: Signals deletion of an IOC
+      description:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: integer
+              description: Identifier of the IOC
+      responses:
+        "200":
+          description: Everything went fine
 components:
   schemas:
     case:
@@ -241,3 +279,32 @@ components:
         note_id: 2362
         note_title: "note title"
         note_content: "some content"
+    ioc:
+      type: object
+      required:
+        - ioc_id
+        - ioc_description
+        - ioc_value
+        - ioc_tags
+        - ioc_type_id
+        - ioc_tlp_id
+      properties:
+        ioc_id:
+          type: number
+        ioc_description:
+          type: string
+        ioc_value:
+          type: string
+        ioc_tags:
+          type: string
+        ioc_type_id:
+          type: number
+        ioc_tlp_id:
+          type: number
+      x-examples:
+        ioc_id: 1
+        ioc_description: "Description"
+        ioc_value: "hello"
+        ioc_tags: ""
+        ioc_type_id: 4
+        ioc_tlp_id: 2

@@ -107,7 +107,7 @@ Example data:
 | hook name              | data type                  |
 |------------------------|----------------------------|
 | on_postload_ioc_create | app.models.models.Ioc list |
-| on_postload_ioc_delete | ?                          |
+| on_postload_ioc_delete | int list                   |
 | on_postload_ioc_update | app.models.models.Ioc list |
 
 Notes: 
@@ -119,17 +119,25 @@ Notes:
 Example data:
 ```json
 {
-  "ioc_tags": "",
-  "ioc_type": 4,
-  "ioc_uuid": "fcc7fdd4-21d4-4c92-b2b5-a93cd08499d0",
-  "ioc_tlp_id": 2,
-  "ioc_type_id": 4,
-  "custom_attributes": {},
-  "ioc_misp": null,
-  "ioc_description": "None",
-  "user_id": 1,
   "ioc_id": 1,
-  "ioc_value": "value"
+  "ioc_uuid": "fcc7fdd4-21d4-4c92-b2b5-a93cd08499d0",
+  "ioc_description": "Description",
+  "ioc_value": "value",
+  "user_id": 1,
+  "ioc_tags": "",
+  "ioc_type_id": 4,
+  "ioc_tlp_id": 2,
+  "ioc_misp": null,
+  "ioc_enrichment": null,
+  "ioc_type": {
+    "type_id": 1,
+    "type_name": "AS",
+    "type_validation_expect": null,
+    "type_description": "Autonomous system",
+    "type_taxonomy": null,
+    "type_validation_regex": null
+  },
+  "custom_attributes": {}
 }
 ```
 

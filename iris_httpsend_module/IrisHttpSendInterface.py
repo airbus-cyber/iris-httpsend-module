@@ -29,7 +29,7 @@ from app.schema.marshables import CaseEvidenceSchema
 from app.schema.marshables import CaseTaskSchema
 
 _POSTLOAD_HOOKS = [
-    'on_postload_case_create', 'on_postload_case_delete',
+    'on_postload_case_create', 'on_postload_case_delete', 'on_postload_case_info_update',
     'on_postload_asset_create', 'on_postload_asset_delete', 'on_postload_asset_update',
     'on_postload_note_create', 'on_postload_note_delete', 'on_postload_note_update',
     'on_postload_ioc_create', 'on_postload_ioc_delete', 'on_postload_ioc_update',
@@ -88,7 +88,7 @@ class IrisHttpSendInterface(IrisModuleInterface):
         return result
 
     def _parse_hook_action(self, hook_name):
-        result = hook_name.split('_')[3]
+        result = hook_name.split('_')[-1]
         if result not in ['create', 'delete', 'update']:
             message = f'Unexpected hook action {result}.'
             self.log.error(message)

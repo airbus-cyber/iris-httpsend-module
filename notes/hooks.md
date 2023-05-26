@@ -12,18 +12,16 @@
 | on_postload_case_delete      | int list                    |
 | on_postload_case_info_update | app.models.cases.Cases list |
 
-Note: `on_postload_case_delete` does not seem to call the module `hooks_handler` method.
-Maybe because the object is already removed from the database?
-
 Example data:
 ```json
 {
+  "case_id": 2,
+  "case_uuid": "32396d24-fdcc-4da0-a660-d4f2e5c91ce1",
+  "user_id": 1,
+  "case_name": "#4 - AA",
   "status_id": 0,
   "owner_id": 1,
-  "user_id": 1,
   "closing_note": null,
-  "case_name": "#4 - AA",
-  "close_date": null,
   "case_description": "BB",
   "classification_id": 8,
   "case_customer": 1,
@@ -34,11 +32,10 @@ Example data:
       "action": "created"
     }
   },
-  "case_id": 2,
-  "open_date": "2023-01-27",
-  "case_uuid": "32396d24-fdcc-4da0-a660-d4f2e5c91ce1",
   "custom_attributes": {},
-  "case_soc_id": ""
+  "case_soc_id": "",
+  "open_date": "2023-01-27",
+  "close_date": null
 }
 ```
 
@@ -49,27 +46,22 @@ Example data:
 | on_postload_asset_delete | int list                          |
 | on_postload_asset_update | app.models.models.CaseAssets list |
 
-Note: `on_postload_asset_delete` does not seem to call the module `hooks_handler` method. 
-(see behavior with `iris_check_module`)
-
 Example data:
 ```json
 {
+  "asset_id": 1,
+  "asset_uuid": "d65043c5-9c5d-4b5e-b501-c70f181039d8",
+  "user_id": 1,
+  "case_id": 2,
+  "asset_name": "name",
+  "asset_description": "",
   "analysis_status_id": 1,
   "asset_domain": "",
-  "asset_id": 1,
   "asset_info": "",
-  "asset_description": "",
   "asset_tags": "",
   "asset_type_id": 13,
   "asset_compromise_status_id": 0,
-  "date_update": "2023-01-27T09:37:37.866665",
   "custom_attributes": {},
-  "user_id": 1,
-  "asset_name": "name",
-  "asset_uuid": "d65043c5-9c5d-4b5e-b501-c70f181039d8",
-  "date_added": "2023-01-27T09:37:37.866655",
-  "case_id": 2,
   "asset_ip": "",
   "asset_enrichment": null,
   "asset_type": {
@@ -78,7 +70,9 @@ Example data:
     "asset_icon_compromised": "ioc_user.png",
     "asset_id": 5,
     "asset_icon_not_compromised": "user.png"
-  }
+  },
+  "date_added": "2023-01-27T09:37:37.866655",
+  "date_update": "2023-01-27T09:37:37.866665"
 }
 ```
 
@@ -89,8 +83,6 @@ Example data:
 | on_postload_note_create | app.models.models.Notes list |
 | on_postload_note_delete | int list                     |
 | on_postload_note_update | app.models.models.Notes list |
-
-Note: `on_postload_note_delete` does not seem to call the module `hooks_handler` method.
 
 Example data:
 ```json
@@ -111,7 +103,6 @@ Example data:
 | on_postload_ioc_update | app.models.models.Ioc list |
 
 Notes: 
-* `on_postload_ioc_delete` does not seem to call the module `hooks_handler` method.
 * export/import csv does not work
 * even when importing a csv with two IOCs, hook `on_postload_ioc_create` is called twice with a list of 1 element. 
   I was expecting the hook to be called once with two elements. Is it ever a list of more than one element?
@@ -121,9 +112,9 @@ Example data:
 {
   "ioc_id": 1,
   "ioc_uuid": "fcc7fdd4-21d4-4c92-b2b5-a93cd08499d0",
+  "user_id": 1,
   "ioc_description": "Description",
   "ioc_value": "value",
-  "user_id": 1,
   "ioc_tags": "",
   "ioc_type_id": 4,
   "ioc_tlp_id": 2,
@@ -146,26 +137,28 @@ Example data:
 | hook name                | data type                        |
 |--------------------------|----------------------------------|
 | on_postload_event_create | app.models.cases.CasesEvent list |
-| on_postload_event_delete | ?                                |
+| on_postload_event_delete | int list                         |
 | on_postload_event_update | app.models.cases.CasesEvent list |
-
-Note: `on_postload_event_delete` does not seem to call the module `hooks_handler` method.
 
 Example data:
 ```json
 {
-  "event_tags": "",
   "event_id": 1,
-  "event_in_summary": false,
-  "event_color": "#6861CE99",
-  "event_added": "2023-01-27T09:40:14.423013",
-  "custom_attributes": {},
+  "event_uuid": "85f99ba0-5c83-4a6b-9c99-23ea0ccd1f2c",
   "user_id": 1,
-  "event_raw": "",
   "case_id": 2,
+  "event_title": "title",
+  "event_date": "2023-01-27T00:00:00.000000",
+  "event_date_wtz": "2023-01-27T00:00:00.000000",
   "event_tz": "+00:00",
   "event_content": "",
-  "event_uuid": "85f99ba0-5c83-4a6b-9c99-23ea0ccd1f2c",
+  "event_tags": "",
+  "event_raw": "",
+  "event_color": "#6861CE99",
+  "event_source": "",
+  "event_in_summary": false,
+  "event_is_flagged": false,
+  "event_in_graph": true,
   "modification_history": {
     "1674812414.423076": {
       "user": "administrator",
@@ -173,14 +166,11 @@ Example data:
       "user_id": 1
     }
   },
-  "event_date_wtz": "2023-01-27T00:00:00.000000",
-  "event_is_flagged": false,
-  "event_source": "",
-  "event_in_graph": true,
-  "event_date": "2023-01-27T00:00:00.000000",
-  "event_title": "title"
+  "custom_attributes": {},
+  "event_added": "2023-01-27T09:40:14.423013"
 }
 ```
+
 
 ## Evidence
 

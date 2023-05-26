@@ -155,22 +155,62 @@ paths:
       responses:
         "200":
           description: Everything went fine
+  /event:
+    post:
+      summary: Signals creation of a new event
+      description:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/event"
+      responses:
+        "200":
+          description: Everything went fine
+    put:
+      summary: Signals update of an event
+      description:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/event"
+      responses:
+        "200":
+          description: Everything went fine
+    delete:
+      summary: Signals deletion of an event
+      description:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: integer
+              description: Identifier of the event
+      responses:
+        "200":
+          description: Everything went fine
 components:
   schemas:
     case:
       type: object
       required:
         - case_id
+        - user_id
         - case_name
         - case_description
         - case_customer
         - case_soc_id
-        - user_id
         - open_date
       properties:
         case_id:
           type: integer
           description: Identifier of the case
+        user_id:
+          type: number
         case_name:
           type: string
         case_description:
@@ -182,8 +222,6 @@ components:
           type: number
         case_soc_id:
           type: string
-        user_id:
-          type: number
         open_date:
           type: string
         close_date:
@@ -202,34 +240,38 @@ components:
     asset:
       type: object
       required:
-        - case_id
         - asset_id
+        - user_id
+        - case_id
+        - asset_name
+        - asset_description
         - analysis_status_id
         - asset_domain
         - asset_info
-        - asset_description
         - asset_tags
         - asset_type_id
         - asset_compromise_status_id
         - date_update
-        - user_id
-        - asset_name
         - date_added
         - asset_ip
       properties:
-        case_id:
-          type: integer
-          description: Identifier of the case
         asset_id:
           type: integer
           description: Identifier of the asset
+        user_id:
+          type: number
+        case_id:
+          type: integer
+          description: Identifier of the case
+        asset_name:
+          type: string
+        asset_description:
+          type: string
         analysis_status_id:
           type: number
         asset_domain:
           type: string
         asset_info:
-          type: string
-        asset_description:
           type: string
         asset_tags:
           type: string
@@ -238,10 +280,6 @@ components:
         asset_compromise_status_id:
           type: integer
         date_update:
-          type: string
-        user_id:
-          type: number
-        asset_name:
           type: string
         date_added:
           type: string
@@ -308,3 +346,68 @@ components:
         ioc_tags: ""
         ioc_type_id: 4
         ioc_tlp_id: 2
+    event:
+      type: object
+      required:
+        - event_id
+        - user_id
+        - case_id
+        - event_title
+        - event_date
+        - event_date_wtz
+        - event_tz
+        - event_content
+        - event_tags
+        - event_raw
+        - event_color
+        - event_source
+        - event_in_summary
+        - event_in_graph
+        - event_added
+      properties:
+        event_id:
+          type: number
+        user_id:
+          type: number
+        case_id:
+          type: number
+        event_title:
+          type: string
+        event_date:
+          type: string
+        event_date_wtz:
+          type: string
+        event_tz:
+          type: string
+        event_content:
+          type: string
+        event_tags:
+          type: string
+        event_raw:
+          type: string
+        event_color:
+          type: string
+        event_source:
+          type: string
+        event_in_summary:
+          type: boolean
+        event_in_graph:
+          type: boolean
+        event_added:
+          type: string
+      x-examples:
+        event_id: 14985
+        user_id: 1
+        case_id: 2
+        event_title: "Tests"
+        event_date: "2021-12-12T05:45:46.000000"
+        event_date_wtz: "2021-12-12T05:45:46.000000"
+        event_tz: "+00:00"
+        event_content: ""
+        event_tags: ""
+        event_raw: ""
+        event_color: "#6861CE99"
+        event_source: ""
+        event_in_summary: true
+        event_in_graph: true
+        event_added: "2022-01-21T19:17:16.154055"

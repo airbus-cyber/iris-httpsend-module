@@ -321,6 +321,7 @@ components:
       type: object
       required:
         - ioc_id
+        - user_id
         - ioc_description
         - ioc_value
         - ioc_tags
@@ -328,6 +329,8 @@ components:
         - ioc_tlp_id
       properties:
         ioc_id:
+          type: number
+        user_id:
           type: number
         ioc_description:
           type: string
@@ -341,6 +344,7 @@ components:
           type: number
       x-examples:
         ioc_id: 1
+        user_id: 1
         ioc_description: "Description"
         ioc_value: "hello"
         ioc_tags: ""

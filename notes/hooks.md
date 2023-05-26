@@ -177,24 +177,23 @@ Example data:
 | hook name                   | data type                               |
 |-----------------------------|-----------------------------------------|
 | on_postload_evidence_create | app.models.models.CaseReceivedFile list |
-| on_postload_evidence_delete | ?                                       |
+| on_postload_evidence_delete | int list                                |
 | on_postload_evidence_update | app.models.models.CaseReceivedFile list |
-
-Note: `on_postload_evidence_delete` does not seem to call the module `hooks_handler` method.
 
 Example data:
 ```json
 {
   "id": 1,
-  "file_description": "",
-  "filename": "filename",
-  "file_hash": "",
   "file_uuid": "447084c4-6f72-46e3-bc0e-6fd34233673c",
+  "filename": "filename",
+  "file_description": "",
+  "file_hash": "",
   "file_size": 123,
   "custom_attributes": {},
   "date_added": "2023-01-27T09:40:53.974245"
 }
 ```
+
 
 ## Task
 

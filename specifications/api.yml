@@ -193,6 +193,44 @@ paths:
       responses:
         "200":
           description: Everything went fine
+  /evidence:
+    post:
+      summary: Signals creation of a new evidence
+      description:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/evidence"
+      responses:
+        "200":
+          description: Everything went fine
+    put:
+      summary: Signals update of an evidence
+      description:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/evidence"
+      responses:
+        "200":
+          description: Everything went fine
+    delete:
+      summary: Signals deletion of an evidence
+      description:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: integer
+              description: Identifier of the evidence
+      responses:
+        "200":
+          description: Everything went fine
 components:
   schemas:
     case:
@@ -415,3 +453,32 @@ components:
         event_in_summary: true
         event_in_graph: true
         event_added: "2022-01-21T19:17:16.154055"
+    evidence:
+      type: object
+      required:
+        - id
+        - filename
+        - file_description
+        - file_hash
+        - file_size
+        - date_added
+      properties:
+        id:
+          type: number
+        filename:
+          type: string
+        file_description:
+          type: string
+        file_hash:
+          type: string
+        file_size:
+          type: number
+        date_added:
+          type: string
+      x-examples:
+        id: 2
+        filename: "demo.csv"
+        file_description: "some description"
+        file_hash: "d2e891600921f39bc7fd6e234c574005"
+        file_size: 231
+        date_added: "2023-05-26T08:43:44.177907"

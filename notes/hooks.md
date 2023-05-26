@@ -200,7 +200,7 @@ Example data:
 | hook name               | data type                        |
 |-------------------------|----------------------------------|
 | on_postload_task_create | app.models.models.CaseTasks list |
-| on_postload_task_delete | ?                                |
+| on_postload_task_delete | int list                         |
 | on_postload_task_update | app.models.models.CaseTasks list |
 
 Note: `on_postload_task_delete` does not seem to call the module `hooks_handler` method.
@@ -209,19 +209,19 @@ Example data:
 ```json
 {
   "id": 1,
-  "task_close_date": null,
+  "task_uuid": "96223aad-c4f0-40fa-b10d-cf4321172e20",
+  "task_case_id": 2,
+  "task_title": "title",
+  "task_description": "",
+  "task_status_id": 2,
+  "task_tags": "",
+  "custom_attributes": {},
+  "task_userid_open": 1,
+  "task_userid_update": 1,
   "task_userid_close": null,
   "task_open_date": "2023-01-27T09:41:33.025923",
-  "task_description": "",
-  "task_userid_open": 1,
-  "task_status_id": 2,
-  "task_title": "title",
-  "custom_attributes": {},
   "task_last_update": "2023-01-27T09:41:33.025923",
-  "task_case_id": 2,
-  "task_uuid": "96223aad-c4f0-40fa-b10d-cf4321172e20",
-  "task_userid_update": 1,
-  "task_tags": ""
+  "task_close_date": null
 }
 ```
 

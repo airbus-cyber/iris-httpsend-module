@@ -231,6 +231,44 @@ paths:
       responses:
         "200":
           description: Everything went fine
+  /task:
+    post:
+      summary: Signals creation of a new task
+      description:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/task"
+      responses:
+        "200":
+          description: Everything went fine
+    put:
+      summary: Signals update of a task
+      description:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/task"
+      responses:
+        "200":
+          description: Everything went fine
+    delete:
+      summary: Signals deletion of a task
+      description:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: integer
+              description: Identifier of the task
+      responses:
+        "200":
+          description: Everything went fine
 components:
   schemas:
     case:
@@ -482,3 +520,48 @@ components:
         file_hash: "d2e891600921f39bc7fd6e234c574005"
         file_size: 231
         date_added: "2023-05-26T08:43:44.177907"
+    task:
+      type: object
+      required:
+        - id
+        - task_case_id
+        - task_title
+        - task_description
+        - task_status_id
+        - task_tags
+        - task_userid_open
+        - task_userid_update
+        - task_open_date
+        - task_last_update
+      properties:
+        id:
+          type: number
+        task_case_id:
+          type: number
+        task_title:
+          type: string
+        task_description:
+          type: string
+        task_status_id:
+          type: number
+        task_tags:
+          type: string
+        task_userid_open:
+          type: number
+        task_userid_update:
+          type: number
+        task_open_date:
+          type: string
+        task_last_update:
+          type: string
+      x-examples:
+        id: 26
+        task_case_id: 2
+        task_title: "Super task"
+        task_description: "Task"
+        task_status_id: 15
+        task_tags: "tag1,tag2"
+        task_userid_open: 1
+        task_userid_update: 1
+        task_open_date: '2022-01-21T19:31:15.964472'
+        task_last_update: '2022-01-21T19:31:15.964472'

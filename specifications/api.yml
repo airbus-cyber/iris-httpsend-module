@@ -317,8 +317,8 @@ components:
       type: object
       required:
         - asset_id
-        - user_id
         - case_id
+        - user_id
         - asset_name
         - asset_description
         - analysis_status_id
@@ -334,11 +334,11 @@ components:
         asset_id:
           type: integer
           description: Identifier of the asset
-        user_id:
-          type: number
         case_id:
           type: integer
           description: Identifier of the case
+        user_id:
+          type: number
         asset_name:
           type: string
         asset_description:
@@ -362,41 +362,55 @@ components:
         asset_ip:
           type: string
       x-examples:
-        case_id: 2
         asset_id: 2208
+        case_id: 2
+        user_id: 1
+        asset_name: "Asset 1"
+        asset_description: "Asset description"
         analysis_status_id: 2
         asset_domain: "My domain"
         asset_info: "Additional info"
-        asset_description: "Asset description"
         asset_tags: "Asset,tags"
         asset_type_id: 1
         asset_compromise_status_id: 0
         date_update: "2022-01-21T17:42:37.286203"
-        user_id: 1
-        asset_name: "Asset 1"
         date_added: "2022-01-21T17:42:37.286192"
-        asset_ip: My IP
+        asset_ip: "ip"
     note:
       type: object
       required:
         - note_id
+        - case_id
         - note_content
         - note_title
+        - note_creationdate
+        - note_lastupdate
       properties:
         note_id:
           type: number
+        case_id:
+          type: integer
+          description: Identifier of the case
         note_content:
           type: string
         note_title:
           type: string
+        note_creationdate:
+          type: string
+        note_lastupdate:
+          type: string
       x-examples:
         note_id: 2362
+        case_id: 2
         note_title: "note title"
         note_content: "some content"
+        note_creationdate: "2021-10-25T06:31:39.881552"
+        note_lastupdate: "2021-10-25T06:31:39.881552"
     ioc:
       type: object
       required:
         - ioc_id
+        - case_id
         - user_id
         - ioc_description
         - ioc_value
@@ -406,6 +420,9 @@ components:
       properties:
         ioc_id:
           type: number
+        case_id:
+          type: integer
+          description: Identifier of the case
         user_id:
           type: number
         ioc_description:
@@ -420,6 +437,7 @@ components:
           type: number
       x-examples:
         ioc_id: 1
+        case_id: 2
         user_id: 1
         ioc_description: "Description"
         ioc_value: "hello"
@@ -430,8 +448,8 @@ components:
       type: object
       required:
         - event_id
-        - user_id
         - case_id
+        - user_id
         - event_title
         - event_date
         - event_date_wtz
@@ -447,9 +465,9 @@ components:
       properties:
         event_id:
           type: number
-        user_id:
-          type: number
         case_id:
+          type: number
+        user_id:
           type: number
         event_title:
           type: string
@@ -467,6 +485,7 @@ components:
           type: string
         event_color:
           type: string
+          nullable: true
         event_source:
           type: string
         event_in_summary:
@@ -477,8 +496,8 @@ components:
           type: string
       x-examples:
         event_id: 14985
-        user_id: 1
         case_id: 2
+        user_id: 1
         event_title: "Tests"
         event_date: "2021-12-12T05:45:46.000000"
         event_date_wtz: "2021-12-12T05:45:46.000000"
@@ -495,6 +514,7 @@ components:
       type: object
       required:
         - id
+        - case_id
         - filename
         - file_description
         - file_hash
@@ -502,6 +522,8 @@ components:
         - date_added
       properties:
         id:
+          type: number
+        case_id:
           type: number
         filename:
           type: string
@@ -515,6 +537,7 @@ components:
           type: string
       x-examples:
         id: 2
+        case_id: 2
         filename: "demo.csv"
         file_description: "some description"
         file_hash: "d2e891600921f39bc7fd6e234c574005"

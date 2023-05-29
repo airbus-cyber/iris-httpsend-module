@@ -22,11 +22,13 @@ import json
 import requests
 from app.schema.marshables import CaseSchema
 from app.schema.marshables import CaseAssetsSchema
-from app.schema.marshables import CaseAddNoteSchema
+from app.schema.marshables import CaseNoteSchema
 from app.schema.marshables import IocSchema
 from app.schema.marshables import EventSchema
 from app.schema.marshables import CaseEvidenceSchema
 from app.schema.marshables import CaseTaskSchema
+from app.models import IocLink
+from app.models import Cases
 
 _POSTLOAD_HOOKS = [
     'on_postload_case_create', 'on_postload_case_delete', 'on_postload_case_info_update',
@@ -41,7 +43,7 @@ _POSTLOAD_HOOKS = [
 _HOOK_OBJECTS_TO_SCHEMAS = {
     'case': CaseSchema(),
     'asset': CaseAssetsSchema(),
-    'note': CaseAddNoteSchema(),
+    'note': CaseNoteSchema(),
     'ioc': IocSchema(),
     'event': EventSchema(),
     'evidence': CaseEvidenceSchema(),
@@ -129,8 +131,22 @@ class IrisHttpSendInterface(IrisModuleInterface):
         for element in data:
             # In case of delete we get an int here (the identifier), otherwise it is some object
             if hook_action != 'delete':
-                element = schema.dump(element)
-            self._notify_element(hook_action, element, url)
+                dumped_element = schema.dump(element)
+                if hook_object == 'ioc':
+                    result = IocLink.query.join(
+                        IocLink.case
+                    ).with_entities(
+                        Cases.case_id
+                    ).filter(
+                        IocLink.ioc_id == element.ioc_id
+                    ).first()
+                    self.log.info(f'Found case identifier for IOC: {result.case_id}')
+                    dumped_element['case_id'] = result.case_id
+                if hook_object == 'evidence':
+                    dumped_element['case_id'] = element.case_id
+                if hook_object == 'note':
+                    dumped_element['case_id'] = element.note_case_id
+            self._notify_element(hook_action, dumped_element, url)
 
     def hooks_handler(self, hook_name: str, hook_ui_name: str, data):
         self.log.info(f'Received {hook_name} {hook_ui_name}')

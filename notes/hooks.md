@@ -88,11 +88,15 @@ Example data:
 ```json
 {
   "note_id": 1,
+  "note_uuid": "e471baa0-ff74-4553-8062-34ab2b197be6"
   "note_content": "## Edit me with the right pencil button",
   "note_title": "Untitled note",
-  "custom_attributes": {}
+  "custom_attributes": {},
+  "note_creationdate": "2023-05-26T14:23:17.180352",
+  "note_lastupdate": "2023-05-26T14:23:17.180352"
 }
 ```
+
 
 ## IOC
 

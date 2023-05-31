@@ -31,7 +31,7 @@ from app.models import IocLink
 from app.models import Cases
 
 _POSTLOAD_HOOKS = [
-    'on_postload_case_create', 'on_postload_case_delete', 'on_postload_case_info_update',
+    'on_postload_case_create', 'on_postload_case_delete', 'on_postload_case_update',
     'on_postload_asset_create', 'on_postload_asset_delete', 'on_postload_asset_update',
     'on_postload_note_create', 'on_postload_note_delete', 'on_postload_note_update',
     'on_postload_ioc_create', 'on_postload_ioc_delete', 'on_postload_ioc_update',

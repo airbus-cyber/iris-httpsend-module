@@ -51,7 +51,7 @@ jobs:
       - name: Patch Iris (if any patch present)
         working-directory: iris-web
         run: |
-          if [ -d patches ]
+          if [ -d ../iris-httpsend-module/patches ]
           then
             git apply --verbose ../iris-httpsend-module/patches/*.patch
           fi

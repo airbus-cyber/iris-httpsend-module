@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * now registers to hook `on_postload_case_update` to handle case updates
 * added field `case_id` for notes, iocs and evidences
 * updated DFIR-IRIS version to v2.2.2
+* includes patch of DFIR-IRIS so that the request to register module (POST /manage/modules/add) returns the module information 
 
 
 ## [0.4.0](https://github.com/airbus-cyber/iris-httpsend-module/compare/0.3.0...0.4.0)

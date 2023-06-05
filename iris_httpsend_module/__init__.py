@@ -14,6 +14,6 @@
 #  along with this program; if not, write to the Free Software Foundation,
 #  Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-VERSION = '0.6.0'
+VERSION = '0.6.1'
 
 __iris_module_interface = "IrisHttpSendInterface"

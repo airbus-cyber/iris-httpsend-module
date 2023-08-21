@@ -33,9 +33,9 @@ Calls to get_active_user_by_login and get_user_by_username
 
 # Conclusion
 
-In any case, when migrating from an older version, a tool must be run to check there are no two accounts with the same login once in lower case. This is our starting assumption.
-
-The option "case insensitive comparison so database fields can keep their initial case and would be shown that way in the interface" seems appealing because there wouldn't be any need for migration. It still seems problematic. The application will have no way to tell which user to pick, if they have the same login once in lower case. If the application retrieves the an arbitrary user, it could result into a user login into the other's account.
+The option "case insensitive comparison so database fields can keep their initial case and would be shown that way in the interface" is appealing because there wouldn't be any need for migration. 
+Still, a tool must be run to check there are no two accounts with the same login once in lower case. This is our starting assumption.
+This avoids the problematic scenario: the application will have no way to tell which user to pick, if they have the same login once in lower case. If the application retrieves the an arbitrary user, it could result into a user login into the other's account.
 We have to find a way to retrieve all users based on their login once converted to lower case (https://stackoverflow.com/questions/16573095/case-insensitive-flask-sqlalchemy-query). It is feasible but not as direct as retrieving the user by its login.
 
 So it seems preferable to enforce all logins to lower case in database. This can be done in two ways either at the boundaries of the database, or at the boundaries of the application. I think I prefer at the boundaries of the application. Because we can enforce lower case once at the entry point rather than at each database operation. To enforce unicity at the database level, we could still https://stackoverflow.com/questions/50056605/how-to-add-uniqueconstraint-in-sqlalchemy.

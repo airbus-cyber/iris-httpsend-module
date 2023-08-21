@@ -27,7 +27,7 @@ An answer states "For usability reasons, if a username is case sensitive it shou
 Calls to get_active_user_by_login and get_user_by_username
 * password authentication gets the user by login
 * ldap authentication gets the user by login after authentication
-* to check if the user exists, ldap automatic provisioning searches the use by login
+* to check if the user exists, ldap automatic provisioning searches the user by login
 * Carefull, there is all app.schema.marshables.UserSchema, verify_username!!!
 
 
@@ -42,6 +42,8 @@ So it seems preferable to enforce all logins to lower case in database. This can
 
 We could still implement an hybrid solution according to the IRIS_AUTHENTICATION_TYPE. Implementation for local authentification would not change and only in ldap would the users be created with a lower case login. However, we have to keep in mind, that in ldap, users can either be created automatically or by the API. So it would make for a more complex implementation (enforcing lower case according to some configuration flags). Also the possibility of having the IRIS_AUTHENTICATION_TYPE change during the life of the product can not be entirely excluded. This options seems perilous.
 
+We chose to keep the users case in the database and perform case-insensitive checks/retrieval on the login.
+
 ## Implementation hints
 Application boundaries:
 * API user creation https://github.com/dfir-iris/iris-web/blob/v2.3.1/source/app/blueprints/manage/manage_users.py#L105
@@ -50,3 +52,4 @@ Application boundaries:
 * user update view? https://github.com/dfir-iris/iris-web/blob/v2.3.1/source/app/blueprints/profile/profile_routes.py#L136
 
 
+To implement the case "insensitive comparison", all the retrieval points should be modified to get the user by login in a case insensitive way (this should be all the code places listed in paragraph User retrival, it can also be seen by looking at all the calls to User.query.filter).

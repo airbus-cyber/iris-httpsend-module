@@ -13,9 +13,9 @@ An answer states "For usability reasons, if a username is case sensitive it shou
 * app.blueprints.login.login_routes: /login route implementation
 * app.iris_engine.access_control.ldap_handler: for ldap authentication and automatic provisioning when AUTHENTICATION_CREATE_USER_IF_NOT_EXIST is set
 * app.util
-** performs login in the case of open id connect (oidc), using the user email (which should also be a unique identifier I guess)
-** method is_user_authenticated, to check is the user is already authenticated
-** used in the definition of annotations api_login_required, ac_case_requires, ac_socket_requires, ac_requires, ac_api_case_requires and ac_api_requires
+    * performs login in the case of open id connect (oidc), using the user email (which should also be a unique identifier I guess)
+    * method is_user_authenticated, to check is the user is already authenticated
+    * used in the definition of annotations api_login_required, ac_case_requires, ac_socket_requires, ac_requires, ac_api_case_requires and ac_api_requires
 * app.datamgmt.manage.manage_users_db: user management in database, in particular it provides method create_user
 * app.models.authorization contains the User database definition, field user is the login (Unique), field name is the displayed name (not Unique), email, uuid, api_key and external_key fields are Unique too, id is the primary key (so necessarily unique too)
 

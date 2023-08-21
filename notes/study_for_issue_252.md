@@ -28,8 +28,7 @@ Calls to get_active_user_by_login and get_user_by_username
 * password authentication gets the user by login
 * ldap authentication gets the user by login after authentication
 * to check if the user exists, ldap automatic provisioning searches the use by login
-
-Carefull, there is all app.schema.marshables.UserSchema, verify_username!!!
+* Carefull, there is all app.schema.marshables.UserSchema, verify_username!!!
 
 
 # Conclusion

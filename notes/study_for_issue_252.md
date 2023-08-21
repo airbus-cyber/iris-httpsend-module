@@ -33,6 +33,8 @@ Calls to get_active_user_by_login and get_user_by_username
 
 # Conclusion
 
+In any case, when migrating from an older version, a tool must be run to check there are no two accounts with the same login once in lower case. This is our starting assumption.
+
 The option "case insensitive comparison so database fields can keep their initial case and would be shown that way in the interface" seems appealing because there wouldn't be any need for migration. It still seems problematic. The application will have no way to tell which user to pick, if they have the same login once in lower case. If the application retrieves the an arbitrary user, it could result into a user login into the other's account.
 We have to find a way to retrieve all users based on their login once converted to lower case (https://stackoverflow.com/questions/16573095/case-insensitive-flask-sqlalchemy-query). It is feasible but not as direct as retrieving the user by its login.
 

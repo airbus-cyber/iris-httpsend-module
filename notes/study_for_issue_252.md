@@ -24,11 +24,12 @@ An answer states "For usability reasons, if a username is case sensitive it shou
 * app.datamgmt.manage.manage_users_db.update_user
 
 ## User retrieval
-Calls to get_active_user_by_login and get_user_by_username
+Calls to get_active_user_by_login and get_user_by_username (and other calls User.query.filter)
 * password authentication gets the user by login (https://github.com/dfir-iris/iris-web/blob/v2.3.1/source/app/blueprints/login/login_routes.py#L97)
 * ldap authentication gets the user by login after authentication (https://github.com/dfir-iris/iris-web/blob/v2.3.1/source/app/blueprints/login/login_routes.py#L86)
 * to check if the user exists, ldap automatic provisioning searches the user by login (https://github.com/dfir-iris/iris-web/blob/v2.3.1/source/app/iris_engine/access_control/ldap_handler.py#L45)
 * Carefull, there is all app.schema.marshables.UserSchema, verify_username!!! (https://github.com/dfir-iris/iris-web/blob/v2.3.1/source/app/schema/marshables.py#L713)
+* API route /manage/users/lookup/login/<string:login> (https://github.com/dfir-iris/iris-web/blob/v2.3.1/source/app/blueprints/manage/manage_users.py#L467)
 
 
 # Conclusion

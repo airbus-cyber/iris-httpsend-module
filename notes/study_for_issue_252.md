@@ -28,7 +28,7 @@ Calls to get_active_user_by_login and get_user_by_username
 * password authentication gets the user by login (https://github.com/dfir-iris/iris-web/blob/v2.3.1/source/app/blueprints/login/login_routes.py#L97)
 * ldap authentication gets the user by login after authentication (https://github.com/dfir-iris/iris-web/blob/v2.3.1/source/app/blueprints/login/login_routes.py#L86)
 * to check if the user exists, ldap automatic provisioning searches the user by login (https://github.com/dfir-iris/iris-web/blob/v2.3.1/source/app/iris_engine/access_control/ldap_handler.py#L45)
-* Carefull, there is all app.schema.marshables.UserSchema, verify_username!!!
+* Carefull, there is all app.schema.marshables.UserSchema, verify_username!!! (https://github.com/dfir-iris/iris-web/blob/v2.3.1/source/app/schema/marshables.py#L713)
 
 
 # Conclusion

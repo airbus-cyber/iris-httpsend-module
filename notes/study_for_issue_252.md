@@ -67,13 +67,23 @@ Implementation questions to:
 
 # Test scenarios
 
+## Log in with different case, all lower case
+* dfir-iris configured with local authentication
+* login as `administrator`
+* create a user with `Toto` as login
+* logout
+* login with `toto` should work
+
 ## Log in with different case
 * dfir-iris configured with local authentication
+* login as `administrator`
 * create a user with `Toto` as login
-* login with `toto` should work
+* logout
+* login with `toTo` should work
 
 ## Do not create two users with same login by different cases
 * dfir-iris configured with local authentication
+* login as `administrator`
 * create a user with `Toto` as login
 * creation of a user with `toto` as login should not work
 

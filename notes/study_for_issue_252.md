@@ -53,6 +53,6 @@ Application boundaries:
 * user update view? https://github.com/dfir-iris/iris-web/blob/v2.3.1/source/app/blueprints/profile/profile_routes.py#L136
 
 
-To implement the case "insensitive comparison", all the retrieval points should be modified to get the user by login in a case insensitive way (this should be all the code places listed in paragraph User retrival, it can also be seen by looking at all the calls to User.query.filter).
-Look all User.query.filter, transform User.user == into User.user.ilike). Should also group calls to User.query.filter in app.datamgmt.manage.manage_users_db.
+To implement the case "insensitive comparison", all the retrieval points should be modified to get the user by login in a case insensitive way (this should be all the code places listed in paragraph [User retrieval](#user-retrieval), it can also be seen by looking at all the calls to `User.query.filter`).
+Look all `User.query.filter`, transform `User.user ==` into `User.user.ilike`). Should also group calls to `User.query.filter` in `app.datamgmt.manage.manage_users_db`.
 

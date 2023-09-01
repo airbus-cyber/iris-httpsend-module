@@ -60,8 +60,10 @@ Implementation tasks perform:
 * in `app.datamgmt.manage.manage_users_db` split method `get_user(user_id, key)` in to `get_user and get_user_by_mail(user_email)`
 * grouped most calls to `User.query.filter*` into `app.datamgmt.manage.manage_users_db`
 
-Implementation questions:
-* ask why the `User.query.filter` with_entites [here](https://github.com/dfir-iris/iris-web/blob/v2.3.2/source/app/blueprints/case/case_timeline_routes.py#L752) couldn't simply be replaced by a call to `get_user` followed by an access to field `name` of the result.
+Implementation questions to:
+* couldn't the `User.query.filter` with entities [here](https://github.com/dfir-iris/iris-web/blob/v2.3.2/source/app/blueprints/case/case_timeline_routes.py#L752) simply be replaced by a call to `get_user` followed by an access to field `name` of the result?
+* does `User.query.with_entities(User.name).filter(User.id == id).first()` (https://github.com/dfir-iris/iris-web/blob/v2.3.2/source/app/blueprints/case/case_tasks_routes.py#L208, https://github.com/dfir-iris/iris-web/blob/v2.3.2/source/app/blueprints/dashboard/dashboard_routes.py#L322) give the same result as `User.query.filter(User.id == id).with_entities(User.name).first()` (https://github.com/dfir-iris/iris-web/blob/v2.3.2/source/app/blueprints/case/case_timeline_routes.py#L752)?
+* should we start a discussion dedicated to code?
 
 # Test scenarios
 

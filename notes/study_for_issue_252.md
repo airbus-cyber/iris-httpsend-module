@@ -68,14 +68,23 @@ Implementation questions to:
 # Test scenarios
 
 ## Log in with different case
+* dfir-iris configured with local authentication
 * create a user with `Toto` as login
 * login with `toto` should work
 
 ## Do not create two users with same login by different cases
+* dfir-iris configured with local authentication
 * create a user with `Toto` as login
 * creation of a user with `toto` as login should not work
 
 ## REST API to retrieve user by login
+* dfir-iris configured with local authentication
 * create a user with `Toto` as login
 * querying `GET` on `/manage/users/lookup/login/toto` should return the user's information
+
+## Log in with different case after ldap user provisioning
+* dfir-iris configured with ldap authentication and user provisioning
+* login as a user `Toto` as login, so that it is provisioned
+* log out
+* login should with `toto` should work
 

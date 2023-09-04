@@ -56,7 +56,7 @@ Application boundaries:
 To implement the case "insensitive comparison", all the retrieval points should be modified to get the user by login in a case insensitive way (this should be all the code places listed in paragraph [User retrieval](#user-retrieval), it can also be seen by looking at all the calls to `User.query.filter`).
 Look all `User.query.filter`, transform `User.user ==` into `User.user.ilike`). Should also group calls to `User.query.filter` in `app.datamgmt.manage.manage_users_db`.
 
-Implementation tasks perform:
+Implementation tasks performed:
 * in `app.datamgmt.manage.manage_users_db` split method `get_user(user_id, key)` in to `get_user and get_user_by_mail(user_email)`
 * grouped most calls to `User.query.filter*` into `app.datamgmt.manage.manage_users_db`
 

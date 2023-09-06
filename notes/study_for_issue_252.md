@@ -61,6 +61,14 @@ Implementation tasks performed:
 * grouped most calls to `User.query.*` into `app.datamgmt.manage.manage_users_db`
 * checked test scenarios
 
+We have a somewhat strange behavior with this scenario (First log in to ldap with a different case, with ldap user provisioning):
+* dfir-iris configured with ldap authentication and user provisioning
+* a user with `user1` as login is present in the ldap
+* login as a user `uSer1` as login
+* the user is automatically provisionned with `uSer1` as login
+* do we consider this a bug?
+
+
 Implementation questions to:
 * couldn't the `User.query.filter` with entities [here](https://github.com/dfir-iris/iris-web/blob/v2.3.2/source/app/blueprints/case/case_timeline_routes.py#L752) simply be replaced by a call to `get_user` followed by an access to field `name` of the result?
 * does `User.query.with_entities(User.name).filter(User.id == id).first()` (https://github.com/dfir-iris/iris-web/blob/v2.3.2/source/app/blueprints/case/case_tasks_routes.py#L208, https://github.com/dfir-iris/iris-web/blob/v2.3.2/source/app/blueprints/dashboard/dashboard_routes.py#L322) give the same result as `User.query.filter(User.id == id).with_entities(User.name).first()` (https://github.com/dfir-iris/iris-web/blob/v2.3.2/source/app/blueprints/case/case_timeline_routes.py#L752)?
@@ -99,7 +107,8 @@ Implementation questions to:
 
 ## Log in with different case after ldap user provisioning
 * dfir-iris configured with ldap authentication and user provisioning
-* login as a user `Toto` as login, so that it is provisioned
+* a user with `user1` as login is present in the ldap
+* login as a user `user1` as login, so that it is provisioned
 * log out
-* login should with `toto` should work
+* login should with `uSer1` should work
 

@@ -68,6 +68,7 @@ Implementation questions to:
 * it would be nice to have an explanation of how to run unittests in the development section of the documentation
 * is the minimal version of python indicated somewhere? I tried to run the unittests with python 3.8.10 and got a an error `TypeError: 'type' object is not subscriptable` on tuple[]
 * the unit tests are not really unitary, as they require the whole application to be running, with, I guess, at least a database docker running?
+* we can't import code from app.datamgmt.manage.manage_users_db in app.iris_engine.access_control.utils, because there would be a circular dependency. This prevents some code refactoring. It seems to me, manage_users_db should be concerned only with database access and as such, be lower in the dependency hierarchy than access_control.utils...
 
 # Test scenarios
 

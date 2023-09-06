@@ -58,7 +58,8 @@ Look all `User.query.filter`, transform `User.user ==` into `User.user.ilike`). 
 
 Implementation tasks performed:
 * in `app.datamgmt.manage.manage_users_db` split method `get_user(user_id, key)` in to `get_user and get_user_by_mail(user_email)`
-* grouped most calls to `User.query.filter*` into `app.datamgmt.manage.manage_users_db`
+* grouped most calls to `User.query.*` into `app.datamgmt.manage.manage_users_db`
+* checked test scenarios
 
 Implementation questions to:
 * couldn't the `User.query.filter` with entities [here](https://github.com/dfir-iris/iris-web/blob/v2.3.2/source/app/blueprints/case/case_timeline_routes.py#L752) simply be replaced by a call to `get_user` followed by an access to field `name` of the result?

@@ -64,6 +64,7 @@ Implementation questions to:
 * couldn't the `User.query.filter` with entities [here](https://github.com/dfir-iris/iris-web/blob/v2.3.2/source/app/blueprints/case/case_timeline_routes.py#L752) simply be replaced by a call to `get_user` followed by an access to field `name` of the result?
 * does `User.query.with_entities(User.name).filter(User.id == id).first()` (https://github.com/dfir-iris/iris-web/blob/v2.3.2/source/app/blueprints/case/case_tasks_routes.py#L208, https://github.com/dfir-iris/iris-web/blob/v2.3.2/source/app/blueprints/dashboard/dashboard_routes.py#L322) give the same result as `User.query.filter(User.id == id).with_entities(User.name).first()` (https://github.com/dfir-iris/iris-web/blob/v2.3.2/source/app/blueprints/case/case_timeline_routes.py#L752)?
 * should we start a discussion dedicated to code?
+* would be nice to have an explanation of how to run unittests in the development section of the documentation
 
 # Test scenarios
 

@@ -66,6 +66,7 @@ Implementation questions to:
 * should we start a discussion dedicated to code?
 * it would be nice to have an explanation of how to run unittests in the development section of the documentation
 * is the minimal version of python indicated somewhere? I tried to run the unittests with python 3.8.10 and got a an error `TypeError: 'type' object is not subscriptable` on tuple[]
+* the unit tests are not really unitary, as they require the whole application to be running, with, I guess, at least a database docker running?
 
 # Test scenarios
 

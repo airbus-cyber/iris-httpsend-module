@@ -1,0 +1,91 @@
+# Root creation
+dn: dc=example,dc=org
+objectClass: dcObject
+objectClass: organization
+dc: example
+o: example
+
+dn: ou=users,dc=example,dc=org
+objectClass: organizationalUnit
+ou: users
+
+dn: ou=groups,dc=example,dc=org
+objectClass: organizationalUnit
+ou: groups
+
+dn: ou=IRIS,ou=groups,dc=example,dc=org
+objectClass: organizationalUnit
+ou: IRIS
+
+# User administrator creation
+dn: cn=administrator,ou=users,dc=example,dc=org
+cn: administrator
+sn: Bar1
+objectClass: inetOrgPerson
+objectClass: posixAccount
+objectClass: shadowAccount
+userPassword: password0
+uid: administrator
+uidNumber: 1000
+gidNumber: 1000
+homeDirectory: /home/administrator
+mail: administrator@someplace.local
+displayName: Administrator Name
+#memberOf: cn=administrator,ou=IRIS,ou=groups,dc=example,dc=org
+
+# User user1 creation
+dn: cn=user1,ou=users,dc=example,dc=org
+cn: user1
+sn: Bar2
+objectClass: inetOrgPerson
+objectClass: posixAccount
+objectClass: shadowAccount
+userPassword: password1
+uid: user1
+uidNumber: 1001
+gidNumber: 1001
+homeDirectory: /home/user1
+mail: user1@someplace.local
+displayName: User1 Name
+#memberOf: cn=analyst,ou=IRIS,ou=groups,dc=example,dc=org
+#memberOf: cn=user1,ou=IRIS,ou=groups,dc=example,dc=org
+
+# User user2 creation
+dn: cn=user2,ou=users,dc=example,dc=org
+cn: user2
+sn: Bar3
+objectClass: inetOrgPerson
+objectClass: posixAccount
+objectClass: shadowAccount
+userPassword: password2
+uid: user2
+uidNumber: 1002
+gidNumber: 1002
+homeDirectory: /home/user2
+mail: user2@someplace.local
+displayName: User2 Name
+#memberOf: cn=analyst,ou=IRIS,ou=groups,dc=example,dc=org
+
+# In Iris .env, we will have: LDAP_GROUP_BASE="ou=groups,dc=example,dc=org"
+# Group creation
+dn: cn=administrator,ou=IRIS,ou=groups,dc=example,dc=org
+cn: administrator
+objectClass: groupOfUniqueNames
+# User group membership
+uniqueMember: cn=administrator,ou=users,dc=example,dc=org
+
+# Group creation
+dn: cn=analyst,ou=IRIS,ou=groups,dc=example,dc=org
+cn: analyst
+objectClass: groupOfUniqueNames
+# User group membership
+uniqueMember: cn=user1,ou=users,dc=example,dc=org
+uniqueMember: cn=user2,ou=users,dc=example,dc=org
+
+# Group creation
+dn: cn=guest,ou=IRIS,ou=groups,dc=example,dc=org
+cn: guest
+objectClass: groupOfUniqueNames
+# User group membership
+uniqueMember: cn=user1,ou=users,dc=example,dc=org
+

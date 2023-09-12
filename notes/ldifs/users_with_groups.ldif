@@ -1,0 +1,65 @@
+# Root creation
+dn: dc=example,dc=org
+objectClass: dcObject
+objectClass: organization
+dc: example
+o: example
+
+dn: ou=users,dc=example,dc=org
+objectClass: organizationalUnit
+ou: users
+
+# User administrator creation
+dn: cn=administrator,ou=users,dc=example,dc=org
+cn: administrator
+sn: Bar1
+objectClass: inetOrgPerson
+objectClass: posixAccount
+objectClass: shadowAccount
+userPassword: password0
+uid: administrator
+uidNumber: 1000
+gidNumber: 1000
+homeDirectory: /home/administrator
+mail: administrator@someplace.local
+displayName: Administrator Name
+
+# User user1 creation
+dn: cn=user1,ou=users,dc=example,dc=org
+cn: user1
+sn: Bar2
+objectClass: inetOrgPerson
+objectClass: posixAccount
+objectClass: shadowAccount
+userPassword: password1
+uid: user1
+uidNumber: 1001
+gidNumber: 1001
+homeDirectory: /home/user1
+mail: user1@someplace.local
+displayName: User1 Name
+
+# User user2 creation
+dn: cn=user2,ou=users,dc=example,dc=org
+cn: user2
+sn: Bar3
+objectClass: inetOrgPerson
+objectClass: posixAccount
+objectClass: shadowAccount
+userPassword: password2
+uid: user2
+uidNumber: 1002
+gidNumber: 1002
+homeDirectory: /home/user2
+mail: user2@someplace.local
+displayName: User2 Name
+
+# Group creation
+dn: cn=readers,ou=users,dc=example,dc=org
+cn: readers
+objectClass: groupOfNames
+# User group membership
+member: cn=administrator,ou=users,dc=example,dc=org
+member: cn=user1,ou=users,dc=example,dc=org
+member: cn=user2,ou=users,dc=example,dc=org
+

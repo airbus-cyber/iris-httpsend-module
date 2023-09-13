@@ -11,4 +11,21 @@
     except Exception as e:
         raise Exception(e.__str__())
 ```
+* should we remove groups in IRIS when they disappear from LDAP_GROUP_BASE?
+* seems to me, configuration of LDAP is getting too complex: should try to eliminate variables
+* to create a group, it we need to set field group_permissions. The set of all permissions can be retrieved with `from app.iris_engine.access_control.utils import ac_get_mask_full_permissions`
+* Thus, I believe we shouldn't be trying to create groups in IRIS. We can/remove them from user, but not create them. There is missing information in the LDAP. Or should we create with group_permissions set to 0 (no permissions at all, this will require an administrator intervention to update).
 
+#Test cases
+
+##Non IRIS groups
+* user has two groups, only one belongs to the LDAP_GROUP_BASE
+* check the user belongs only to the one group
+
+##Group to create
+
+##Group to delete
+
+##Group to add to user
+
+##Group to remove from user

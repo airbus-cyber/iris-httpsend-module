@@ -31,7 +31,6 @@ gidNumber: 1000
 homeDirectory: /home/administrator
 mail: administrator@someplace.local
 displayName: Administrator Name
-#memberOf: cn=administrator,ou=IRIS,ou=groups,dc=example,dc=org
 
 # User user1 creation
 dn: cn=user1,ou=users,dc=example,dc=org
@@ -47,8 +46,6 @@ gidNumber: 1001
 homeDirectory: /home/user1
 mail: user1@someplace.local
 displayName: User1 Name
-#memberOf: cn=analyst,ou=IRIS,ou=groups,dc=example,dc=org
-#memberOf: cn=user1,ou=IRIS,ou=groups,dc=example,dc=org
 
 # User user2 creation
 dn: cn=user2,ou=users,dc=example,dc=org
@@ -64,27 +61,26 @@ gidNumber: 1002
 homeDirectory: /home/user2
 mail: user2@someplace.local
 displayName: User2 Name
-#memberOf: cn=analyst,ou=IRIS,ou=groups,dc=example,dc=org
 
 # In Iris .env, we will have: LDAP_GROUP_BASE="ou=groups,dc=example,dc=org"
 # Group creation
-dn: cn=administrator,ou=IRIS,ou=groups,dc=example,dc=org
-cn: administrator
+dn: cn=Administrators,ou=IRIS,ou=groups,dc=example,dc=org
+cn: Administrators
 objectClass: groupOfUniqueNames
 # User group membership
 uniqueMember: cn=administrator,ou=users,dc=example,dc=org
 
 # Group creation
-dn: cn=analyst,ou=IRIS,ou=groups,dc=example,dc=org
-cn: analyst
+dn: cn=Analysts,ou=IRIS,ou=groups,dc=example,dc=org
+cn: Analysts
 objectClass: groupOfUniqueNames
 # User group membership
 uniqueMember: cn=user1,ou=users,dc=example,dc=org
 uniqueMember: cn=user2,ou=users,dc=example,dc=org
 
 # Group creation
-dn: cn=guest,ou=IRIS,ou=groups,dc=example,dc=org
-cn: guest
+dn: cn=Guests,ou=IRIS,ou=groups,dc=example,dc=org
+cn: Guests
 objectClass: groupOfUniqueNames
 # User group membership
 uniqueMember: cn=user1,ou=users,dc=example,dc=org

@@ -3,7 +3,7 @@ services:
 
   opendldap:
     container_name: iris_ldap
-    image: bitnami/openldap:2
+    image: bitnami/openldap:2.6
     networks:
       - iris_frontend
     ports:

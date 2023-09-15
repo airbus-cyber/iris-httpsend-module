@@ -6,9 +6,15 @@ The format is loosely based on [Keep a Changelog](https://keepachangelog.com/en/
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [0.7.0](https://github.com/airbus-cyber/iris-httpsend-module/compare/0.6.1...0.7.0)
+### Features
+* 
+
+
 ## [0.6.1](https://github.com/airbus-cyber/iris-httpsend-module/compare/0.6.0...0.6.1)
 ### Bug Fixes
 * Set correct package version
+
 
 ## [0.6.0](https://github.com/airbus-cyber/iris-httpsend-module/compare/0.5.0...0.6.0)
 ### Features

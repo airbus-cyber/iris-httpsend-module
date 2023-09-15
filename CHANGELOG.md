@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.7.0](https://github.com/airbus-cyber/iris-httpsend-module/compare/0.6.1...0.7.0)
 ### Features
-* 
+* updated DFIR-IRIS version to v2.3.2
 
 
 ## [0.6.1](https://github.com/airbus-cyber/iris-httpsend-module/compare/0.6.0...0.6.1)

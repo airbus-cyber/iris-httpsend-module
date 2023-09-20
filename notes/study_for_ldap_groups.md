@@ -14,7 +14,8 @@
 * should we remove groups in IRIS when they disappear from LDAP_GROUP_BASE?
 * seems to me, configuration of LDAP is getting too complex: should try to eliminate variables
 * to create a group, it we need to set field group_permissions. The set of all permissions can be retrieved with `from app.iris_engine.access_control.utils import ac_get_mask_full_permissions`
-* Thus, I believe we shouldn't be trying to create groups in IRIS. We can/remove them from user, but not create them. There is missing information in the LDAP. Or should we create with group_permissions set to 0 (no permissions at all, this will require an administrator intervention to update, anyway so what's the point). Note, that if we have IRIS create/remove groups, we need two additional configuration variables: LDAP_GROUP_BASE and LDAP_GROUP_OBJECT_CLASS
+* Thus, I believe we shouldn't be trying to create groups in IRIS. We can/remove them from user, but not create them. There is missing information in the LDAP. Or should we create with group_permissions set to 0 (no permissions at all, this will require an administrator intervention to update, anyway so what's the point). Note, that if we have IRIS create/remove groups, we need two additional configuration variables: LDAP_GROUP_BASE and LDAP_GROUP_OBJECT_CLASS (respectively equal to ou=IRIS,ou=groups,dc=example,dc=org and groupOfUniqueNames in my use case)
+* carefull with this update, there is a breaking change, since variable IRIS_NEW_USERS_DEFAULT_GROUP has been removed in .env
 
 #Test cases
 

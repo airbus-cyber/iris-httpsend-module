@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.7.0](https://github.com/airbus-cyber/iris-httpsend-module/compare/0.6.1...0.7.0)
 ### Features
 * updated DFIR-IRIS version to v2.3.2
-* included patch to perform case insensitive login 
+* included patch to perform case insensitive login (see [pull request 306](https://github.com/dfir-iris/iris-web/pull/306))
 * included patch to automatically add/remove users' groups from ldap
 
 

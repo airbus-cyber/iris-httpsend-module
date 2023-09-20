@@ -1,0 +1,238 @@
+diff --git a/.env.model b/.env.model
+index 8e64a1a0..6218de3b 100644
+--- a/.env.model
++++ b/.env.model
+@@ -32,8 +32,6 @@ IRIS_AUTHENTICATION_TYPE=local
+ #IRIS_ADM_USERNAME=administrator
+ # requests the just-in-time creation of users with ldap authentification (see https://github.com/dfir-iris/iris-web/issues/203)
+ #IRIS_AUTHENTICATION_CREATE_USER_IF_NOT_EXIST=True
+-# the group to which newly created users are initially added, default value is Analysts
+-#IRIS_NEW_USERS_DEFAULT_GROUP=
+ 
+ # -- FOR LDAP AUTHENTICATION
+ #IRIS_AUTHENTICATION_TYPE=ldap
+@@ -43,6 +41,9 @@ IRIS_AUTHENTICATION_TYPE=local
+ #LDAP_USER_PREFIX=uid=
+ #LDAP_USER_SUFFIX=ou=people,dc=example,dc=com
+ #LDAP_USE_SSL=False
++# bind account dn and password
++#LDAP_BIND_DN=
++#LDAP_BIND_PASSWORD=
+ # base DN in which to search for users
+ #LDAP_SEARCH_DN=ou=users,dc=example,dc=org
+ # unique identifier to search the user
+diff --git a/source/app/configuration.py b/source/app/configuration.py
+index bbb0e055..7aec6473 100644
+--- a/source/app/configuration.py
++++ b/source/app/configuration.py
+@@ -369,7 +369,6 @@ class Config:
+ 
+     AUTHENTICATION_TYPE = authentication_type
+     AUTHENTICATION_CREATE_USER_IF_NOT_EXIST = (authentication_create_user_if_not_exists == "True")
+-    IRIS_NEW_USERS_DEFAULT_GROUP = config.load('IRIS', 'NEW_USERS_DEFAULT_GROUP', fallback='Analysts')
+     AUTHENTICATION_LOCAL_FALLBACK = config.load('IRIS', 'AUTHENTICATION_LOCAL_FALLBACK', fallback="True") == "True"
+ 
+     if authentication_type == 'oidc_proxy':
+@@ -408,6 +407,9 @@ class Config:
+ 
+         LDAP_AUTHENTICATION_TYPE = config.load('LDAP', 'AUTHENTICATION_TYPE')
+ 
++        LDAP_BIND_DN = config.load('LDAP', 'BIND_DN')
++        LDAP_BIND_PASSWORD = config.load('LDAP', 'BIND_PASSWORD')
++
+         LDAP_SEARCH_DN = config.load('LDAP', 'SEARCH_DN')
+         if authentication_create_user_if_not_exists and LDAP_SEARCH_DN is None:
+             raise Exception('LDAP enabled with user provisioning: LDAP_SEARCH_DN should be set')
+diff --git a/source/app/iris_engine/access_control/ldap_handler.py b/source/app/iris_engine/access_control/ldap_handler.py
+index 7ca30016..6a40be92 100644
+--- a/source/app/iris_engine/access_control/ldap_handler.py
++++ b/source/app/iris_engine/access_control/ldap_handler.py
+@@ -29,61 +29,107 @@ from ldap3.utils import conv
+ from app import app
+ from app.datamgmt.manage.manage_users_db import get_active_user_by_login
+ from app.datamgmt.manage.manage_users_db import create_user
+-from app.datamgmt.manage.manage_users_db import add_user_to_group
++from app.datamgmt.manage.manage_users_db import update_user_groups
+ from app.datamgmt.manage.manage_groups_db import get_group_by_name
+ 
+-log = app.logger
++_log = app.logger
++_ldap_authentication_type = app.config.get('LDAP_AUTHENTICATION_TYPE')
++_attribute_unique_identifier = app.config.get('LDAP_ATTRIBUTE_IDENTIFIER')
++_attribute_display_name = app.config.get('LDAP_ATTRIBUTE_DISPLAY_NAME')
++_attribute_mail = app.config.get('LDAP_ATTRIBUTE_MAIL')
+ 
+ 
+ def _get_unique_identifier(user_login):
+-    if app.config.get('LDAP_AUTHENTICATION_TYPE').lower() == 'ntlm':
++    if _ldap_authentication_type.lower() == 'ntlm':
+         return user_login[user_login.find('\\')+1:]
+     return user_login
+ 
+ 
+-def _provision_user(connection, user_login):
+-    if get_active_user_by_login(user_login):
+-        return
++def _connect(server, ldap_user, ldap_user_pwd):
++    connection = Connection(server,
++                            user=ldap_user,
++                            password=ldap_user_pwd,
++                            auto_referrals=False,
++                            authentication=_ldap_authentication_type)
++
++    try:
++        if not connection.bind():
++            _log.error(f"Cannot bind to ldap server: {connection.last_error} ")
++            return None
++
++    except ldap3.core.exceptions.LDAPInvalidCredentialsResult as e:
++        _log.error(f'Wrong credentials. Error : {e.__str__()}')
++        return None
++
++    return connection
++
++
++def _connect_bind_account(server):
++    ldap_bind_dn = app.config.get('LDAP_BIND_DN')
++    ldap_bind_password = app.config.get('LDAP_BIND_PASSWORD')
++    return _connect(server, ldap_bind_dn, ldap_bind_password)
++
++
++def _search_user_in_ldap(connection, user_login):
+     search_base = app.config.get('LDAP_SEARCH_DN')
+-    attribute_unique_identifier = app.config.get('LDAP_ATTRIBUTE_IDENTIFIER')
+     unique_identifier = conv.escape_filter_chars(_get_unique_identifier(user_login))
+-    attribute_display_name = app.config.get('LDAP_ATTRIBUTE_DISPLAY_NAME')
+-    attribute_mail = app.config.get('LDAP_ATTRIBUTE_MAIL')
+-    attributes = []
+-    if attribute_display_name:
+-        attributes.append(attribute_display_name)
+-    if attribute_mail:
+-        attributes.append(attribute_mail)
+-    connection.search(search_base, f'({attribute_unique_identifier}={unique_identifier})', attributes=attributes)
+-    entry = connection.entries[0]
+-    if attribute_display_name:
+-        user_name = entry[attribute_display_name].value
++    attributes = ['memberOf']
++    if _attribute_display_name:
++        attributes.append(_attribute_display_name)
++    if _attribute_mail:
++        attributes.append(_attribute_mail)
++    connection.search(search_base, f'({_attribute_unique_identifier}={unique_identifier})', attributes=attributes)
++    return connection.entries[0]
++
++
++def _provision_user(user_login, ldap_user_entry):
++    if _attribute_display_name:
++        user_name = ldap_user_entry[_attribute_display_name].value
+     else:
+         user_name = user_login
+-    if attribute_mail:
+-        user_email = entry[attribute_mail].value
++    if _attribute_mail:
++        user_email = ldap_user_entry[_attribute_mail].value
+     else:
+         user_email = f'{user_login}@ldap'
+ 
+-    log.info(f'Provisioning user "{user_login}" which is present in LDAP but not yet in database.')
++    _log.info(f'Provisioning user "{user_login}" which is present in LDAP but not yet in database.')
+     # TODO the user password is chosen randomly
+     #      ideally it should be possible to create a user without providing any password
+     # TODO to create the user password, we use the same code as the one to generate the administrator password in post_init.py
+     #      => should factor and reuse this code bit as a function
+     #      => also, it should probably be more secure to use the secrets module (instead of random)
+     password = ''.join(random.choices(string.printable[:-6], k=16))
+-    # TODO It seems email unicity is required (a fixed email causes a problem at the second account creation)
+-    #      The email either comes from the ldap or is forged from the login to ensure unicity
+-    user = create_user(user_name, user_login, password, user_email, True)
+-    initial_group = get_group_by_name(app.config.get('IRIS_NEW_USERS_DEFAULT_GROUP'))
+-    add_user_to_group(user.id, initial_group.group_id)
++    # TODO It seems email uniqueness is required (a fixed email causes a problem at the second account creation)
++    #      The email either comes from the ldap or is forged from the login to ensure uniqueness
++    return create_user(user_name, user_login, password, user_email, True)
++
++
++def _parse_cn(distinguished_name):
++    relative_distinguished_names = distinguished_name.split(',')
++    common_name = relative_distinguished_names[0]
++    return common_name[len('cn='):]
++
++
++def _update_user_groups(user, ldap_user_entry):
++    ldap_group_names = ldap_user_entry['memberOf'].value
++    if isinstance(ldap_group_names, str):
++        ldap_group_names = [ldap_group_names]
++    groups = []
++    for ldap_group_name in ldap_group_names:
++        group_name = _parse_cn(ldap_group_name)
++        group = get_group_by_name(group_name)
++        if group is None:
++            _log.warning(f'Ignoring group declared in LDAP which does not exist in DFIR-IRIS: \'{group_name}\'.')
++            continue
++        groups.append(group.group_id)
++    update_user_groups(user.id, groups)
+ 
+ 
+ def ldap_authenticate(ldap_user_name, ldap_user_pwd):
+     """
+     Authenticate to the LDAP server
+     """
+-    if app.config.get('LDAP_AUTHENTICATION_TYPE').lower() != 'ntlm':
++    if _ldap_authentication_type.lower() != 'ntlm':
+         ldap_user_name = conv.escape_filter_chars(ldap_user_name)
+         ldap_user = f"{app.config.get('LDAP_USER_PREFIX')}{ldap_user_name.strip()}{ ','+app.config.get('LDAP_USER_SUFFIX') if app.config.get('LDAP_USER_SUFFIX') else ''}"
+     else:
+@@ -106,28 +152,20 @@ def ldap_authenticate(ldap_user_name, ldap_user_pwd):
+         server = Server(f'{app.config.get("LDAP_CONNECT_STRING")}',
+                         use_ssl=app.config.get('LDAP_USE_SSL'))
+ 
+-    conn = Connection(server,
+-                      user=ldap_user,
+-                      password=ldap_user_pwd,
+-                      auto_referrals=False,
+-                      authentication=app.config.get('LDAP_AUTHENTICATION_TYPE'))
+-
+-    try:
+-
+-        if not conn.bind():
+-            log.error(f"Cannot bind to ldap server: {conn.last_error} ")
+-            return False
+-
+-        if app.config.get('AUTHENTICATION_CREATE_USER_IF_NOT_EXIST'):
+-            _provision_user(conn, ldap_user_name)
+-
+-    except ldap3.core.exceptions.LDAPInvalidCredentialsResult as e:
+-        log.error(f'Wrong credentials. Error : {e.__str__()}')
++    connection = _connect(server, ldap_user, ldap_user_pwd)
++    if not connection:
+         return False
+ 
+-    except Exception as e:
+-        raise Exception(e.__str__())
++    if app.config.get('AUTHENTICATION_CREATE_USER_IF_NOT_EXIST'):
++        connection = _connect_bind_account(server)
++        if not connection:
++            return False
++        ldap_user_entry = _search_user_in_ldap(connection, ldap_user_name)
++        user = get_active_user_by_login(ldap_user_name)
++        if not user:
++            user = _provision_user(ldap_user_name, ldap_user_entry)
++        _update_user_groups(user, ldap_user_entry)
+ 
+-    log.info(f"Successful authenticated user")
++    _log.info(f"Successful authenticated user")
+ 
+     return True
+diff --git a/source/app/models/authorization.py b/source/app/models/authorization.py
+index 2562e75e..d9e7611b 100644
+--- a/source/app/models/authorization.py
++++ b/source/app/models/authorization.py
+@@ -87,6 +87,8 @@ class Group(db.Model):
+                         server_default=text('gen_random_uuid()'), unique=True)
+     group_name = Column(Text, nullable=False, unique=True)
+     group_description = Column(Text)
++
++    # this is a mask of values defined in enum Permissions
+     group_permissions = Column(BigInteger, nullable=False)
+     group_auto_follow = Column(Boolean, nullable=False, default=False)
+     group_auto_follow_access_level = Column(BigInteger, nullable=False, default=0)

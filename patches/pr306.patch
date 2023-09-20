@@ -1,0 +1,630 @@
+diff --git a/source/app/blueprints/case/case_tasks_routes.py b/source/app/blueprints/case/case_tasks_routes.py
+index 7b1790c2..ee900fb8 100644
+--- a/source/app/blueprints/case/case_tasks_routes.py
++++ b/source/app/blueprints/case/case_tasks_routes.py
+@@ -32,6 +32,7 @@ from flask_wtf import FlaskForm
+ 
+ from app import db
+ from app.blueprints.case.case_comments import case_comment_update
++from app.datamgmt.manage.manage_users_db import get_user
+ from app.datamgmt.case.case_db import get_case
+ from app.datamgmt.case.case_tasks_db import add_comment_to_task
+ from app.datamgmt.case.case_tasks_db import add_task
+@@ -205,10 +206,10 @@ def case_task_view_modal(cur_id, caseid, url_redir):
+ 
+     form.task_title.render_kw = {'value': task.task_title}
+     form.task_description.data = task.task_description
+-    user_name, = User.query.with_entities(User.name).filter(User.id == task.task_userid_update).first()
++    user = get_user(task.task_userid_update)
+     comments_map = get_case_tasks_comments_count([task.id])
+ 
+-    return render_template("modal_add_case_task.html", form=form, task=task, user_name=user_name,
++    return render_template("modal_add_case_task.html", form=form, task=task, user_name=user.name,
+                            comments_map=comments_map, attributes=task.custom_attributes)
+ 
+ 
+diff --git a/source/app/blueprints/case/case_timeline_routes.py b/source/app/blueprints/case/case_timeline_routes.py
+index 8201d4a6..bbfa1f6a 100644
+--- a/source/app/blueprints/case/case_timeline_routes.py
++++ b/source/app/blueprints/case/case_timeline_routes.py
+@@ -57,6 +57,7 @@ from app.datamgmt.case.case_events_db import update_event_assets
+ from app.datamgmt.case.case_events_db import update_event_iocs
+ from app.datamgmt.case.case_iocs_db import get_ioc_by_value
+ from app.datamgmt.manage.manage_attribute_db import get_default_custom_attributes
++from app.datamgmt.manage.manage_users_db import get_user
+ from app.datamgmt.states import get_timeline_state
+ from app.datamgmt.states import update_timeline_state
+ from app.forms import CaseEventForm
+@@ -749,9 +750,9 @@ def event_view_modal(cur_id, caseid, url_redir):
+     iocs_prefill = get_event_iocs_ids(cur_id, caseid)
+     comments_map = get_case_events_comments_count([cur_id])
+ 
+-    usr_name, = User.query.filter(User.id == event.user_id).with_entities(User.name).first()
++    user = get_user(event.user_id)
+ 
+-    return render_template("modal_add_case_event.html", form=form, event=event, user_name=usr_name, tags=event_tags,
++    return render_template("modal_add_case_event.html", form=form, event=event, user_name=user.name, tags=event_tags,
+                            assets=assets, iocs=iocs, comments_map=comments_map,
+                            assets_prefill=assets_prefill, iocs_prefill=iocs_prefill,
+                            category=event.category, attributes=event.custom_attributes)
+diff --git a/source/app/blueprints/dashboard/dashboard_routes.py b/source/app/blueprints/dashboard/dashboard_routes.py
+index c92cbf9c..19968556 100644
+--- a/source/app/blueprints/dashboard/dashboard_routes.py
++++ b/source/app/blueprints/dashboard/dashboard_routes.py
+@@ -39,6 +39,8 @@ from app.datamgmt.dashboard.dashboard_db import get_global_task, list_user_cases
+ from app.datamgmt.dashboard.dashboard_db import get_tasks_status
+ from app.datamgmt.dashboard.dashboard_db import list_global_tasks
+ from app.datamgmt.dashboard.dashboard_db import list_user_tasks
++from app.datamgmt.manage.manage_users_db import get_user
++from app.datamgmt.manage.manage_users_db import get_users_ordered_by_name
+ from app.forms import CaseGlobalTaskForm
+ from app.iris_engine.module_handler.module_handler import call_modules_hook
+ from app.iris_engine.utils.tracker import track_activity
+@@ -267,7 +269,7 @@ def add_gtask_modal(caseid):
+ 
+     form = CaseGlobalTaskForm()
+ 
+-    form.task_assignee_id.choices = [(user.id, user.name) for user in User.query.filter(User.active == True).order_by(User.name).all()]
++    form.task_assignee_id.choices = [(user.id, user.name) for user in get_users_ordered_by_name()]
+     form.task_status_id.choices = [(a.id, a.status_name) for a in get_tasks_status()]
+ 
+     return render_template("modal_add_global_task.html", form=form, task=task, uid=current_user.id, user_name=None)
+@@ -312,17 +314,16 @@ def add_gtask(caseid):
+ def edit_gtask_modal(cur_id, caseid):
+     form = CaseGlobalTaskForm()
+     task = GlobalTasks.query.filter(GlobalTasks.id == cur_id).first()
+-    form.task_assignee_id.choices = [(user.id, user.name) for user in
+-                                     User.query.filter(User.active == True).order_by(User.name).all()]
++    form.task_assignee_id.choices = [(user.id, user.name) for user in get_users_ordered_by_name()]
+     form.task_status_id.choices = [(a.id, a.status_name) for a in get_tasks_status()]
+ 
+     # Render the task
+     form.task_title.render_kw = {'value': task.task_title}
+     form.task_description.data = task.task_description
+-    user_name, = User.query.with_entities(User.name).filter(User.id == task.task_userid_update).first()
++    user = get_user(task.task_userid_update)
+ 
+     return render_template("modal_add_global_task.html", form=form, task=task,
+-                           uid=task.task_assignee_id, user_name=user_name)
++                           uid=task.task_assignee_id, user_name=user.name)
+ 
+ 
+ @dashboard_blueprint.route('/global/tasks/update/<int:cur_id>', methods=['POST'])
+@@ -331,7 +332,7 @@ def edit_gtask(cur_id, caseid):
+ 
+     form = CaseGlobalTaskForm()
+     task = GlobalTasks.query.filter(GlobalTasks.id == cur_id).first()
+-    form.task_assignee_id.choices = [(user.id, user.name) for user in User.query.filter(User.active == True).order_by(User.name).all()]
++    form.task_assignee_id.choices = [(user.id, user.name) for user in get_users_ordered_by_name()]
+     form.task_status_id.choices = [(a.id, a.status_name) for a in get_tasks_status()]
+ 
+     if not task:
+diff --git a/source/app/datamgmt/alerts/alerts_db.py b/source/app/datamgmt/alerts/alerts_db.py
+index 41b19c1e..33a26e89 100644
+--- a/source/app/datamgmt/alerts/alerts_db.py
++++ b/source/app/datamgmt/alerts/alerts_db.py
+@@ -1187,7 +1187,7 @@ def remove_case_alerts_by_ids(alert_ids: List[int]) -> None:
+     db.session.commit()
+ 
+ 
+-def delete_alerts(alert_ids: List[int]) -> tuple[bool, str]:
++def delete_alerts(alert_ids: List[int]) -> Tuple[bool, str]:
+     """
+     Delete multiples alerts from the database
+ 
+diff --git a/source/app/datamgmt/case/case_tasks_db.py b/source/app/datamgmt/case/case_tasks_db.py
+index c19a3791..3bffedaf 100644
+--- a/source/app/datamgmt/case/case_tasks_db.py
++++ b/source/app/datamgmt/case/case_tasks_db.py
+@@ -24,6 +24,7 @@ from sqlalchemy import desc, and_
+ 
+ from app import db
+ from app.datamgmt.manage.manage_attribute_db import get_default_custom_attributes
++from app.datamgmt.manage.manage_users_db import get_user
+ from app.datamgmt.manage.manage_users_db import get_users_list_restricted_from_case
+ from app.datamgmt.states import update_tasks_state
+ from app.models import CaseTasks, TaskAssignee
+@@ -192,7 +193,7 @@ def update_task_assignees(task, task_assignee_list, caseid):
+         if uid not in allowed_users:
+             continue
+ 
+-        user = User.query.filter(User.id == uid).first()
++        user = get_user(uid)
+         if user:
+             ta = TaskAssignee()
+             ta.task_id = task.id
+diff --git a/source/app/datamgmt/manage/manage_groups_db.py b/source/app/datamgmt/manage/manage_groups_db.py
+index 52315e05..3486bdf3 100644
+--- a/source/app/datamgmt/manage/manage_groups_db.py
++++ b/source/app/datamgmt/manage/manage_groups_db.py
+@@ -22,6 +22,7 @@ from sqlalchemy import and_
+ from app import db
+ from app.datamgmt.case.case_db import get_case
+ from app.datamgmt.manage.manage_cases_db import list_cases_id
++from app.datamgmt.manage.manage_users_db import get_user
+ from app.iris_engine.access_control.utils import ac_access_level_mask_from_val_list, ac_ldp_group_removal
+ from app.iris_engine.access_control.utils import ac_access_level_to_list
+ from app.iris_engine.access_control.utils import ac_auto_update_user_effective_access
+@@ -168,7 +169,7 @@ def update_group_members(group, members):
+     users_to_remove = set_cur_groups - set_members
+ 
+     for uid in users_to_add:
+-        user = User.query.filter(User.id == uid).first()
++        user = get_user(uid)
+         if user:
+             ug = UserGroup()
+             ug.group_id = group.group_id
+diff --git a/source/app/datamgmt/manage/manage_users_db.py b/source/app/datamgmt/manage/manage_users_db.py
+index 663b0f8b..02c5f4e4 100644
+--- a/source/app/datamgmt/manage/manage_users_db.py
++++ b/source/app/datamgmt/manage/manage_users_db.py
+@@ -40,22 +40,125 @@ from app.models.authorization import UserGroup
+ from app.models.authorization import UserOrganisation
+ 
+ 
+-def get_user(user_id, id_key: str = 'id'):
+-    user = User.query.filter(getattr(User, id_key) == user_id).first()
++def get_user(user_id):
++    user = User.query.filter(User.id == user_id).first()
++    return user
++
++
++# TODO Isn't this doing the exact same thing as get_user?
++#      Replace all calls to get_user by calls to get_user_by_id and remove get_user?
++def get_user_by_id(user_id: int):
++    return User.query.get(user_id)
++
++
++def get_user_by_username(username):
++    user = User.query.filter(User.user.ilike(username)).first()
+     return user
+ 
+ 
++def get_user_by_email(user_email):
++    return User.query.filter(User.email == user_email).first()
++
++
+ def get_active_user_by_login(username):
+     user = User.query.filter(
+-        User.user == username,
++        User.user.ilike(username),
+         User.active == True
+     ).first()
+     return user
+ 
+ 
+-def list_users_id():
+-    users = User.query.with_entities(User.user_id).all()
+-    return users
++def get_active_user_by_api_key(api_key):
++    user = User.query.filter(
++        User.api_key == api_key,
++        User.active == True
++    ).first()
++    return user
++
++
++def get_user_details(user_id, include_api_key=False):
++
++    user = get_user(user_id)
++
++    if not user:
++        return None
++
++    row = {}
++    row['user_id'] = user.id
++    row['user_uuid'] = user.uuid
++    row['user_name'] = user.name
++    row['user_login'] = user.user
++    row['user_email'] = user.email
++    row['user_active'] = user.active
++    row['user_is_service_account'] = user.is_service_account
++
++    if include_api_key:
++        row['user_api_key'] = user.api_key
++
++    row['user_groups'] = get_user_groups(user_id)
++    row['user_organisations'] = get_user_organisations(user_id)
++    row['user_permissions'] = get_user_effective_permissions(user_id)
++    row['user_cases_access'] = get_user_cases_access(user_id)
++
++    upg = get_user_primary_org(user_id)
++    row['user_primary_organisation_id'] = upg.org_id if upg else 0
++
++    return row
++
++
++def user_exists(user_name, user_email):
++    user = get_user_by_username(user_name)
++    user_by_email = get_user_by_email(user_email)
++
++    return user or user_by_email
++
++
++def delete_user(user_id):
++    UserCaseAccess.query.filter(UserCaseAccess.user_id == user_id).delete()
++    UserOrganisation.query.filter(UserOrganisation.user_id == user_id).delete()
++    UserGroup.query.filter(UserGroup.user_id == user_id).delete()
++    UserCaseEffectiveAccess.query.filter(UserCaseEffectiveAccess.user_id == user_id).delete()
++
++    User.query.filter(User.id == user_id).delete()
++    db.session.commit()
++
++
++def get_users_ordered_by_name():
++    return User.query.filter(User.active == True).order_by(User.name).all()
++
++
++def get_users_list():
++    users = User.query.all()
++
++    output = []
++    for user in users:
++        row = {}
++        row['user_id'] = user.id
++        row['user_uuid'] = user.uuid
++        row['user_name'] = user.name
++        row['user_login'] = user.user
++        row['user_email'] = user.email
++        row['user_active'] = user.active
++        row['user_is_service_account'] = user.is_service_account
++        output.append(row)
++
++    return output
++
++
++def get_users_list_restricted():
++    users = User.query.all()
++
++    output = []
++    for user in users:
++        row = {}
++        row['user_id'] = user.id
++        row['user_uuid'] = user.uuid
++        row['user_name'] = user.name
++        row['user_login'] = user.user
++        row['user_active'] = user.active
++        output.append(row)
++
++    return output
+ 
+ 
+ def get_user_effective_permissions(user_id):
+@@ -402,36 +505,6 @@ def set_user_case_access(user_id, case_id, access_level):
+     return True, 'Case access set to {} for user {}'.format(access_level, user_id)
+ 
+ 
+-def get_user_details(user_id, include_api_key=False):
+-
+-    user = User.query.filter(User.id == user_id).first()
+-
+-    if not user:
+-        return None
+-
+-    row = {}
+-    row['user_id'] = user.id
+-    row['user_uuid'] = user.uuid
+-    row['user_name'] = user.name
+-    row['user_login'] = user.user
+-    row['user_email'] = user.email
+-    row['user_active'] = user.active
+-    row['user_is_service_account'] = user.is_service_account
+-
+-    if include_api_key:
+-        row['user_api_key'] = user.api_key
+-
+-    row['user_groups'] = get_user_groups(user_id)
+-    row['user_organisations'] = get_user_organisations(user_id)
+-    row['user_permissions'] = get_user_effective_permissions(user_id)
+-    row['user_cases_access'] = get_user_cases_access(user_id)
+-
+-    upg = get_user_primary_org(user_id)
+-    row['user_primary_organisation_id'] = upg.org_id if upg else 0
+-
+-    return row
+-
+-
+ def add_case_access_to_user(user, cases_list, access_level):
+     if not user:
+         return None, "Invalid user"
+@@ -464,45 +537,6 @@ def add_case_access_to_user(user, cases_list, access_level):
+     return user, "Updated"
+ 
+ 
+-def get_user_by_username(username):
+-    user = User.query.filter(User.user == username).first()
+-    return user
+-
+-
+-def get_users_list():
+-    users = User.query.all()
+-
+-    output = []
+-    for user in users:
+-        row = {}
+-        row['user_id'] = user.id
+-        row['user_uuid'] = user.uuid
+-        row['user_name'] = user.name
+-        row['user_login'] = user.user
+-        row['user_email'] = user.email
+-        row['user_active'] = user.active
+-        row['user_is_service_account'] = user.is_service_account
+-        output.append(row)
+-
+-    return output
+-
+-
+-def get_users_list_restricted():
+-    users = User.query.all()
+-
+-    output = []
+-    for user in users:
+-        row = {}
+-        row['user_id'] = user.id
+-        row['user_uuid'] = user.uuid
+-        row['user_name'] = user.name
+-        row['user_login'] = user.user
+-        row['user_active'] = user.active
+-        output.append(row)
+-
+-    return output
+-
+-
+ def get_users_view_from_user_id(user_id):
+     organisations = get_user_organisations(user_id)
+     orgs_id = [uo.get('org_id') for uo in organisations]
+@@ -620,21 +654,3 @@ def update_user(user: User, name: str = None, email: str = None, password: str =
+     db.session.commit()
+ 
+     return user
+-
+-
+-def delete_user(user_id):
+-    UserCaseAccess.query.filter(UserCaseAccess.user_id == user_id).delete()
+-    UserOrganisation.query.filter(UserOrganisation.user_id == user_id).delete()
+-    UserGroup.query.filter(UserGroup.user_id == user_id).delete()
+-    UserCaseEffectiveAccess.query.filter(UserCaseEffectiveAccess.user_id == user_id).delete()
+-
+-    User.query.filter(User.id == user_id).delete()
+-    db.session.commit()
+-
+-
+-def user_exists(user_name, user_email):
+-    user = User.query.filter_by(user=user_name).first()
+-    user_by_email = User.query.filter_by(email=user_email).first()
+-
+-    return user or user_by_email
+-
+diff --git a/source/app/iris_engine/access_control/utils.py b/source/app/iris_engine/access_control/utils.py
+index 440d46c0..fd9b3210 100644
+--- a/source/app/iris_engine/access_control/utils.py
++++ b/source/app/iris_engine/access_control/utils.py
+@@ -17,9 +17,17 @@ from app.models.authorization import UserCaseEffectiveAccess
+ from app.models.authorization import UserGroup
+ from app.models.authorization import UserOrganisation
+ 
++
+ log = app.app.logger
+ 
+ 
++# TODO Ideally this function should be pushed down into app.datamgmt.manage.manage_users_db.
++#      But right now, it would create a circular dependency which should be first resolved
++def get_users_ids():
++    users = User.query.with_entities(User.id).all()
++    return [user.id for user in users]
++
++
+ def ac_flag_match_mask(flag, mask):
+     return (flag & mask) == mask
+ 
+@@ -374,13 +382,9 @@ def ac_recompute_all_users_effective_ac():
+     """
+     Recompute all users effective access
+     """
+-    users = User.query.with_entities(
+-        User.id
+-    ).all()
+-    for user_id in users:
+-        ac_auto_update_user_effective_access(user_id[0])
+-
+-    return
++    all_users_ids = get_users_ids()
++    for user_id in all_users_ids:
++        ac_auto_update_user_effective_access(user_id)
+ 
+ 
+ def ac_recompute_effective_ac(user_id):
+@@ -430,8 +434,8 @@ def ac_set_new_case_access(org_members, case_id):
+     if current_user.id in users.keys():
+         del users[current_user.id]
+ 
+-    users_full = User.query.with_entities(User.id).all()
+-    users_full_access = list(set([u.id for u in users_full]) - set(users.keys()))
++    all_users_ids = get_users_ids()
++    users_full_access = list(set(all_users_ids) - set(users.keys()))
+ 
+     ac_add_user_effective_access(users_full_access, case_id, CaseAccessLevel.full_access.value)
+ 
+diff --git a/source/app/post_init.py b/source/app/post_init.py
+index 9d5f75d2..040e52a6 100644
+--- a/source/app/post_init.py
++++ b/source/app/post_init.py
+@@ -30,7 +30,7 @@ import socket
+ import time
+ from alembic import command
+ from alembic.config import Config
+-from sqlalchemy import create_engine, exc, or_
++from sqlalchemy import create_engine, exc
+ from sqlalchemy_utils import create_database
+ from sqlalchemy_utils import database_exists
+ 
+@@ -40,6 +40,8 @@ from app import celery
+ from app import db
+ from app.datamgmt.iris_engine.modules_db import iris_module_disable_by_id
+ from app.datamgmt.manage.manage_groups_db import add_case_access_to_group
++from app.datamgmt.manage.manage_users_db import get_user_by_username
++from app.datamgmt.manage.manage_users_db import get_user_by_email
+ from app.datamgmt.manage.manage_users_db import add_user_to_group
+ from app.datamgmt.manage.manage_users_db import add_user_to_organisation
+ from app.iris_engine.access_control.utils import ac_add_user_effective_access
+@@ -930,10 +932,9 @@ def create_safe_admin(def_org, gadm):
+         admin_email = 'administrator@localhost'
+ 
+     # Check if admin user already exists
+-    user = User.query.filter(or_(
+-        User.user == admin_username,
+-        User.email == admin_email
+-    )).first()
++    user = get_user_by_username(admin_username)
++    if not user:
++        user = get_user_by_email(admin_email)
+     password = None
+ 
+     if not user:
+diff --git a/source/app/schema/marshables.py b/source/app/schema/marshables.py
+index 95934e35..c81347f8 100644
+--- a/source/app/schema/marshables.py
++++ b/source/app/schema/marshables.py
+@@ -48,6 +48,9 @@ from app import db
+ from app import ma
+ from app.datamgmt.datastore.datastore_db import datastore_get_standard_path
+ from app.datamgmt.manage.manage_attribute_db import merge_custom_attributes
++from app.datamgmt.manage.manage_users_db import get_user_by_username
++from app.datamgmt.manage.manage_users_db import get_user_by_email
++from app.datamgmt.manage.manage_users_db import get_user
+ from app.iris_engine.access_control.utils import ac_mask_from_val_list
+ from app.models import AnalysisStatus, CaseClassification, SavedFilter, DataStorePath, IrisModuleHook, Tags, \
+     ReviewStatus
+@@ -709,13 +712,9 @@ class UserSchema(ma.SQLAlchemyAutoSchema):
+                         type=str,
+                         allow_none=True)
+ 
+-        luser = User.query.filter(
+-            User.user == user
+-        ).all()
+-        for usr in luser:
+-            if usr.id != user_id:
+-                raise marshmallow.exceptions.ValidationError('User name already taken',
+-                                                             field_name="user_login")
++        usr = get_user_by_username(user)
++        if usr and usr.id != user_id:
++            raise marshmallow.exceptions.ValidationError('User name already taken', field_name="user_login")
+ 
+         return data
+ 
+@@ -750,13 +749,10 @@ class UserSchema(ma.SQLAlchemyAutoSchema):
+                         type=str,
+                         allow_none=True)
+ 
+-        luser = User.query.filter(
+-            User.email == email
+-        ).all()
+-        for usr in luser:
+-            if usr.id != user_id:
+-                raise marshmallow.exceptions.ValidationError('User email already taken',
+-                                                             field_name="user_email")
++        usr = get_user_by_email(email)
++        if usr and usr.id != user_id:
++            raise marshmallow.exceptions.ValidationError('User email already taken',
++                                                         field_name="user_email")
+ 
+         return data
+ 
+@@ -1406,7 +1402,7 @@ class GlobalTasksSchema(ma.SQLAlchemyAutoSchema):
+                         field_name='task_assignee_id', 
+                         type=int)
+         
+-        user = User.query.filter(User.id == data.get('task_assignee_id')).count()
++        user = get_user(data.get('task_assignee_id'))
+         if not user:
+             raise marshmallow.exceptions.ValidationError("Invalid user id for assignee",
+                                                          field_name="task_assignees_id")
+diff --git a/source/app/util.py b/source/app/util.py
+index 59de6fef..99938d8f 100644
+--- a/source/app/util.py
++++ b/source/app/util.py
+@@ -62,7 +62,7 @@ from app import app
+ from app import db
+ from app.datamgmt.case.case_db import case_exists
+ from app.datamgmt.case.case_db import get_case
+-from app.datamgmt.manage.manage_users_db import get_user
++from app.datamgmt.manage.manage_users_db import get_user_by_email
+ from app.iris_engine.access_control.utils import ac_fast_check_user_has_case_access
+ from app.iris_engine.access_control.utils import ac_get_effective_permissions_of_user
+ from app.iris_engine.utils.tracker import track_activity
+@@ -368,7 +368,7 @@ def _local_authentication_process(incoming_request: Request):
+ 
+ 
+ def _authenticate_with_email(user_email):
+-    user = get_user(user_email, id_key="email")
++    user = get_user_by_email(user_email)
+     if not user:
+         log.error(f'User with email {user_email} is not registered in the IRIS')
+         return False
+diff --git a/source/app/views.py b/source/app/views.py
+index da0a9da3..72955ffd 100644
+--- a/source/app/views.py
++++ b/source/app/views.py
+@@ -64,6 +64,8 @@ from app.blueprints.profile.profile_routes import profile_blueprint
+ from app.blueprints.reports.reports_route import reports_blueprint
+ from app.blueprints.search.search_routes import search_blueprint
+ from app.models.authorization import User
++from app.datamgmt.manage.manage_users_db import get_user_by_id
++from app.datamgmt.manage.manage_users_db import get_active_user_by_api_key
+ from app.post_init import run_post_init
+ 
+ app.register_blueprint(dashboard_blueprint)
+@@ -117,7 +119,7 @@ except Exception as e:
+ # provide login manager with load_user callback
+ @lm.user_loader
+ def load_user(user_id):
+-    return User.query.get(int(user_id))
++    return get_user_by_id(int(user_id))
+ 
+ 
+ @lm.request_loader
+@@ -126,10 +128,7 @@ def load_user_from_request(request):
+     # first, try to login using the api_key url arg
+     api_key = request.args.get('api_key')
+     if api_key:
+-        user = User.query.filter(
+-            User.api_key == api_key,
+-            User.active == True
+-        ).first()
++        user = get_active_user_by_api_key(api_key)
+         if user:
+             return user
+ 
+@@ -138,10 +137,7 @@ def load_user_from_request(request):
+     if api_key:
+         api_key = api_key.replace('Bearer ', '', 1)
+ 
+-        user = User.query.filter(
+-            User.api_key == api_key,
+-            User.active == True
+-        ).first()
++        user = get_active_user_by_api_key(api_key)
+ 
+         if user:
+             return user
+diff --git a/source/tests/performance/test_burst_db_interaction.py b/source/tests/performance/test_burst_db_interaction.py
+index 03cb2851..132d62e3 100644
+--- a/source/tests/performance/test_burst_db_interaction.py
++++ b/source/tests/performance/test_burst_db_interaction.py
+@@ -30,6 +30,7 @@ from app import db
+ from app.datamgmt.case.case_assets_db import create_asset
+ from app.datamgmt.case.case_notes_db import add_note
+ from app.datamgmt.case.case_notes_db import add_note_group
++from app.datamgmt.manage.manage_users_db import get_user
+ from app.datamgmt.manage.manage_users_db import create_user
+ from app.models.cases import Cases
+ from app.models.cases import CasesEvent
+@@ -84,7 +85,7 @@ class TestBurstDBInteraction(TestCase):
+                 description=f"Testing case number {str(i)}",
+                 soc_id=f"SOC{str(i)}",
+                 gen_report=False,
+-                user=(User.query.filter(User.id == random.randrange(1, users_nb)).first()),
++                user=(get_user(random.randrange(1, users_nb))),
+                 client_name=f"client_{str(random.randrange(1, client_nb))}"
+             )
+ 

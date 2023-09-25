@@ -17,16 +17,16 @@
 * Thus, I believe we shouldn't be trying to create groups in IRIS. We can/remove them from user, but not create them. There is missing information in the LDAP. Or should we create with group_permissions set to 0 (no permissions at all, this will require an administrator intervention to update, anyway so what's the point). Note, that if we have IRIS create/remove groups, we need two additional configuration variables: LDAP_GROUP_BASE and LDAP_GROUP_OBJECT_CLASS (respectively equal to ou=IRIS,ou=groups,dc=example,dc=org and groupOfUniqueNames in my use case)
 * carefull with this update, there is a breaking change, since variable IRIS_NEW_USERS_DEFAULT_GROUP has been removed in .env
 
-#Test cases
+# Test cases
 
-##Non IRIS groups
+## Non IRIS groups
 * user has two groups, only one belongs to the LDAP_GROUP_BASE
 * check the user belongs only to the one group
 
-##Group to create
+## Group to create
 
-##Group to delete
+## Group to delete
 
-##Group to add to user
+## Group to add to user
 
-##Group to remove from user
+## Group to remove from user

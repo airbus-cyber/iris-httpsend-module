@@ -19,14 +19,19 @@
 
 # Test cases
 
-## Non IRIS groups
-* user has two groups, only one belongs to the LDAP_GROUP_BASE
-* check the user belongs only to the one group
-
-## Group to create
-
-## Group to delete
-
 ## Group to add to user
+* user has a group in LDAP, but not yet in IRIS
+* at first login, the group should be added to the user
 
 ## Group to remove from user
+* user has a group in IRIS, but not anymore in LDAP
+* at first login, the group should be removed to the user
+
+## Non IRIS groups
+* user has a group from another application, which does not belong to the LDAP_GROUP_BASE_DN
+* check the user does not belong to the other application's group
+
+## Group not already in IRIS should be created from LDAP
+* user has a group which is not yet in IRIS
+* group should be automatically create in IRIS with no permissions
+

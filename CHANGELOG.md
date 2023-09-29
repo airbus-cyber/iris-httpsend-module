@@ -6,6 +6,9 @@ The format is loosely based on [Keep a Changelog](https://keepachangelog.com/en/
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [0.7.2](https://github.com/airbus-cyber/iris-httpsend-module/compare/0.7.1...0.7.2)
+### Bug Fixes
+
 ## [0.7.1](https://github.com/airbus-cyber/iris-httpsend-module/compare/0.7.0...0.7.1)
 ### Bug Fixes
 * updated patch to automatically add/remove users' groups from ldap: added variable LDAP_GROUP_BASE_DN. Users will be added only to groups with this DN. Missing groups in IRIS will be created from LDAP.

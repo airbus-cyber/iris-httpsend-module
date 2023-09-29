@@ -75,10 +75,10 @@ index 52315e05..9bdc70e7 100644
      groups = Group.query.all()
  
 diff --git a/source/app/iris_engine/access_control/ldap_handler.py b/source/app/iris_engine/access_control/ldap_handler.py
-index 7ca30016..8abc12ad 100644
+index 7ca30016..2fc09cb2 100644
 --- a/source/app/iris_engine/access_control/ldap_handler.py
 +++ b/source/app/iris_engine/access_control/ldap_handler.py
-@@ -29,61 +29,117 @@ from ldap3.utils import conv
+@@ -29,66 +29,121 @@ from ldap3.utils import conv
  from app import app
  from app.datamgmt.manage.manage_users_db import get_active_user_by_login
  from app.datamgmt.manage.manage_users_db import create_user
@@ -94,18 +94,14 @@ index 7ca30016..8abc12ad 100644
 +_attribute_display_name = app.config.get('LDAP_ATTRIBUTE_DISPLAY_NAME')
 +_attribute_mail = app.config.get('LDAP_ATTRIBUTE_MAIL')
 +_ldap_group_base_dn = app.config.get('LDAP_GROUP_BASE_DN')
++_ldap_user_prefix = app.config.get('LDAP_USER_PREFIX')
++_ldap_user_suffix = app.config.get('LDAP_USER_SUFFIX')
  
  
- def _get_unique_identifier(user_login):
+-def _get_unique_identifier(user_login):
 -    if app.config.get('LDAP_AUTHENTICATION_TYPE').lower() == 'ntlm':
-+    if _ldap_authentication_type.lower() == 'ntlm':
-         return user_login[user_login.find('\\')+1:]
-     return user_login
- 
- 
--def _provision_user(connection, user_login):
--    if get_active_user_by_login(user_login):
--        return
+-        return user_login[user_login.find('\\')+1:]
+-    return user_login
 +def _connect(server, ldap_user, ldap_user_pwd):
 +    connection = Connection(server,
 +                            user=ldap_user,
@@ -129,12 +125,24 @@ index 7ca30016..8abc12ad 100644
 +    ldap_bind_dn = app.config.get('LDAP_BIND_DN')
 +    ldap_bind_password = app.config.get('LDAP_BIND_PASSWORD')
 +    return _connect(server, ldap_bind_dn, ldap_bind_password)
+ 
+ 
+-def _provision_user(connection, user_login):
+-    if get_active_user_by_login(user_login):
+-        return
++def _connect_user(server, ldap_user_name, ldap_user_pwd):
++    ldap_user = ldap_user_name.strip()
++    ldap_user = f'{_ldap_user_prefix}{ldap_user}'
++    # TODO idea: ldap_user_suffix could include the ',' so that we don't need to make a special case for ntlm
++    if _ldap_user_suffix and _ldap_authentication_type.lower() != 'ntlm':
++        ldap_user = f'{ldap_user},{_ldap_user_suffix}'
++    return _connect(server, ldap_user, ldap_user_pwd)
 +
 +
 +def _search_user_in_ldap(connection, user_login):
      search_base = app.config.get('LDAP_SEARCH_DN')
 -    attribute_unique_identifier = app.config.get('LDAP_ATTRIBUTE_IDENTIFIER')
-     unique_identifier = conv.escape_filter_chars(_get_unique_identifier(user_login))
+-    unique_identifier = conv.escape_filter_chars(_get_unique_identifier(user_login))
 -    attribute_display_name = app.config.get('LDAP_ATTRIBUTE_DISPLAY_NAME')
 -    attribute_mail = app.config.get('LDAP_ATTRIBUTE_MAIL')
 -    attributes = []
@@ -146,6 +154,7 @@ index 7ca30016..8abc12ad 100644
 -    entry = connection.entries[0]
 -    if attribute_display_name:
 -        user_name = entry[attribute_display_name].value
++    unique_identifier = conv.escape_filter_chars(user_login)
 +    attributes = ['memberOf']
 +    if _attribute_display_name:
 +        attributes.append(_attribute_display_name)
@@ -219,11 +228,15 @@ index 7ca30016..8abc12ad 100644
      Authenticate to the LDAP server
      """
 -    if app.config.get('LDAP_AUTHENTICATION_TYPE').lower() != 'ntlm':
-+    if _ldap_authentication_type.lower() != 'ntlm':
-         ldap_user_name = conv.escape_filter_chars(ldap_user_name)
-         ldap_user = f"{app.config.get('LDAP_USER_PREFIX')}{ldap_user_name.strip()}{ ','+app.config.get('LDAP_USER_SUFFIX') if app.config.get('LDAP_USER_SUFFIX') else ''}"
-     else:
-@@ -106,28 +162,20 @@ def ldap_authenticate(ldap_user_name, ldap_user_pwd):
+-        ldap_user_name = conv.escape_filter_chars(ldap_user_name)
+-        ldap_user = f"{app.config.get('LDAP_USER_PREFIX')}{ldap_user_name.strip()}{ ','+app.config.get('LDAP_USER_SUFFIX') if app.config.get('LDAP_USER_SUFFIX') else ''}"
+-    else:
+-        ldap_user = f"{ldap_user_name.strip()}"
+-
+     if app.config.get('LDAP_CUSTOM_TLS_CONFIG') is True:
+         tls_configuration = Tls(validate=ssl.CERT_REQUIRED,
+                                 version=app.config.get('LDAP_TLS_VERSION'),
+@@ -106,28 +161,23 @@ def ldap_authenticate(ldap_user_name, ldap_user_pwd):
          server = Server(f'{app.config.get("LDAP_CONNECT_STRING")}',
                          use_ssl=app.config.get('LDAP_USE_SSL'))
  
@@ -241,10 +254,12 @@ index 7ca30016..8abc12ad 100644
 -
 -        if app.config.get('AUTHENTICATION_CREATE_USER_IF_NOT_EXIST'):
 -            _provision_user(conn, ldap_user_name)
--
++    if _ldap_authentication_type.lower() != 'ntlm':
++        ldap_user_name = conv.escape_filter_chars(ldap_user_name)
+ 
 -    except ldap3.core.exceptions.LDAPInvalidCredentialsResult as e:
 -        log.error(f'Wrong credentials. Error : {e.__str__()}')
-+    connection = _connect(server, ldap_user, ldap_user_pwd)
++    connection = _connect_user(server, ldap_user_name, ldap_user_pwd)
 +    if not connection:
          return False
  

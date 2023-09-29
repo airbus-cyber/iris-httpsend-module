@@ -8,11 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.7.2](https://github.com/airbus-cyber/iris-httpsend-module/compare/0.7.1...0.7.2)
 ### Bug Fixes
+* patch to update users' groups from ldap relies on variable LDAP_USER_PREFIX in order to get the domain name in case of ntlm
+
 
 ## [0.7.1](https://github.com/airbus-cyber/iris-httpsend-module/compare/0.7.0...0.7.1)
 ### Bug Fixes
 * updated patch to automatically add/remove users' groups from ldap: added variable LDAP_GROUP_BASE_DN. Users will be added only to groups with this DN. Missing groups in IRIS will be created from LDAP.
 * added patch to add pycryptodome as a requirement so that ntlm ldap connection works (see https://github.com/cannatag/ldap3/issues/1051)
+
 
 ## [0.7.0](https://github.com/airbus-cyber/iris-httpsend-module/compare/0.6.1...0.7.0)
 ### Features

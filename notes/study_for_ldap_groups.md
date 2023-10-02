@@ -27,6 +27,8 @@
 * user has a group in IRIS, but not anymore in LDAP
 * at first login, the group should be removed to the user
 
+## User without any groups should not fail at login
+
 ## Non IRIS groups
 * user has a group from another application, which does not belong to the LDAP_GROUP_BASE_DN
 * check the user does not belong to the other application's group

@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.7.3](https://github.com/airbus-cyber/iris-httpsend-module/compare/0.7.2...0.7.3)
 ### Bug Fixes
 * patch to update users' groups from ldap does not fail when login a user with no groups declared in ldap
+* added patch to limit Werkzeug version under 3
 
 
 ## [0.7.2](https://github.com/airbus-cyber/iris-httpsend-module/compare/0.7.1...0.7.2)

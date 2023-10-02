@@ -26,6 +26,9 @@ class DockerCompose:
     def start(self):
         subprocess.run(['docker-compose', 'up', '--detach'], cwd=self._docker_compose_path)
 
+    def extract_all_logs(self):
+        return subprocess.check_output(['docker-compose', 'logs', '--no-color'], cwd=self._docker_compose_path, universal_newlines=True)
+
     def stop(self):
         subprocess.run(['docker-compose', 'down'], cwd=self._docker_compose_path)
         subprocess.run(['docker', 'volume', 'prune', '--force'])

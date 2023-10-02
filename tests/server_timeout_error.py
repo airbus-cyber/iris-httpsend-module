@@ -1,0 +1,2 @@
+class ServerTimeoutError(Exception):
+    pass

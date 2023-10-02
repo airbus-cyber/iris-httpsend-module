@@ -20,6 +20,7 @@ import time
 from pathlib import Path
 from rest_api import RestApi
 from docker_compose import DockerCompose
+from server_timeout_error import ServerTimeoutError
 
 _API_URL = 'http://127.0.0.1:8000'
 # Assumes iris docker-compose file is started with a .env file which defines IRIS_ADM_API_KEY with this value
@@ -38,9 +39,17 @@ class Iris:
         self._api = RestApi(_API_URL, _API_KEY)
         self._docker_compose = DockerCompose(self._docker_compose_path)
 
+    def _wait(self, condition, attempts, sleep_duration=1):
+        count = 0
+        while not condition():
+            time.sleep(sleep_duration)
+            count += 1
+            if count > attempts:
+                print('Docker compose logs: ', self._docker_compose.extract_all_logs())
+                raise ServerTimeoutError()
+
     def _wait_until_api_is_ready(self):
-        while not self._api.is_ready():
-            time.sleep(1)
+        self._wait(self._api.is_ready, 60)
 
     def start(self):
         shutil.copytree(_IRIS_PATH, self._docker_compose_path)

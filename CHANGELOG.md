@@ -6,6 +6,10 @@ The format is loosely based on [Keep a Changelog](https://keepachangelog.com/en/
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [0.7.3](https://github.com/airbus-cyber/iris-httpsend-module/compare/0.7.2...0.7.3)
+### Bug Fixes
+
+
 ## [0.7.2](https://github.com/airbus-cyber/iris-httpsend-module/compare/0.7.1...0.7.2)
 ### Bug Fixes
 * patch to update users' groups from ldap relies on variable LDAP_USER_PREFIX in order to get the domain name in case of ntlm

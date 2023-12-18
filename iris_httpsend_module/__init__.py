@@ -16,6 +16,6 @@
 # with IRIS HTTP Send Module. If not, see <https://www.gnu.org/licenses/>.
 
 
-VERSION = '0.7.3'
+VERSION = '0.7.4'
 
 __iris_module_interface = "IrisHttpSendInterface"

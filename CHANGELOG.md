@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is loosely based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.4](https://github.com/airbus-cyber/iris-httpsend-module/compare/0.7.3...0.7.4)
+### Bug Fixes
+* update LGPLv3 disclaimers and files
+* new release format including license files
 
 ## [0.7.3](https://github.com/airbus-cyber/iris-httpsend-module/compare/0.7.2...0.7.3)
 ### Bug Fixes

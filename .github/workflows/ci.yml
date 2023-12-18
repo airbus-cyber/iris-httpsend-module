@@ -24,7 +24,7 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - name: Check out iris-httpsend-module
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Get iris-httpsend-module version
         id: get-version
         run: |
@@ -33,7 +33,7 @@ jobs:
         run: |
           python setup.py bdist_wheel
       - name: Archive iris-httpsend-module wheel
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: iris-httpsend-module-wheel
           path: dist/iris_httpsend_module-${{ steps.get-version.outputs.version }}-py3-none-any.whl
@@ -51,18 +51,18 @@ jobs:
       HTTPSEND_VERSION: ${{ needs.iris-httpsend-module.outputs.version }}
     steps:
       - name: Check out Iris ${{ env.IRIS_VERSION }}
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: dfir-iris/iris-web
           ref: ${{ env.IRIS_VERSION }}
           path: iris-web
       - name: Download iris-httpsend-module wheel
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: iris-httpsend-module-wheel
           path: iris-web/source/dependencies
       - name: Check out iris-httpsend-module
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           path: iris-httpsend-module
       - name: Patch Iris (if any patch present)
@@ -91,11 +91,12 @@ jobs:
           docker tag iriswebapp_nginx:${{ env.IRIS_VERSION }} iriswebapp_nginx:${{ env.HTTPSEND_VERSION }}
           docker tag iriswebapp_app:${{ env.IRIS_VERSION }} iriswebapp_app:${{ env.HTTPSEND_VERSION }}
           docker save iriswebapp_db:${{ env.HTTPSEND_VERSION }} iriswebapp_nginx:${{ env.HTTPSEND_VERSION }} iriswebapp_app:${{ env.HTTPSEND_VERSION }} | gzip > iris-httpsend-${{ env.HTTPSEND_VERSION }}.dockers.tar.gz
+          zip iris-httpsend-${{ env.HTTPSEND_VERSION }}.zip iris-httpsend-${{ env.HTTPSEND_VERSION }}.dockers.tar.gz LICENSE COPYING.*
       - name: Archive dockers tar as artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: dockers
-          path: iris-httpsend-${{ env.HTTPSEND_VERSION }}.dockers.tar.gz
+          path: iris-httpsend-${{ env.HTTPSEND_VERSION }}.zip
           if-no-files-found: error
           retention-days: 1
       - name: Release
@@ -103,5 +104,5 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            iris-httpsend-${{ env.HTTPSEND_VERSION }}.dockers.tar.gz
+            iris-httpsend-${{ env.HTTPSEND_VERSION }}.zip
           fail_on_unmatched_files: true

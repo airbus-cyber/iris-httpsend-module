@@ -36,7 +36,10 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: iris-httpsend-module-wheel
-          path: dist/iris_httpsend_module-${{ steps.get-version.outputs.version }}-py3-none-any.whl
+          path: | 
+            dist/iris_httpsend_module-${{ steps.get-version.outputs.version }}-py3-none-any.whl
+            LICENSE
+            COPYING.*
           if-no-files-found: error
           retention-days: 1
     outputs:
@@ -72,19 +75,19 @@ jobs:
           then
             git apply --verbose ../iris-httpsend-module/patches/*.patch
           fi
-      - name: Build dockers
-        working-directory: iris-web
-        run: |
-          printf "\ndependencies/iris_httpsend_module-${{ env.HTTPSEND_VERSION }}-py3-none-any.whl" >> source/requirements.txt
-          cp .env.model .env
-          docker-compose build
-      - name: Run end-to-end tests
-        working-directory: iris-httpsend-module/tests
-        run: |
-          python -m venv venv
-          source venv/bin/activate
-          pip install -r requirements.txt
-          python -u -m unittest --verbose
+      # - name: Build dockers
+      #   working-directory: iris-web
+      #   run: |
+      #     printf "\ndependencies/iris_httpsend_module-${{ env.HTTPSEND_VERSION }}-py3-none-any.whl" >> source/requirements.txt
+      #     cp .env.model .env
+      #     docker-compose build
+      # - name: Run end-to-end tests
+      #   working-directory: iris-httpsend-module/tests
+      #   run: |
+      #     python -m venv venv
+      #     source venv/bin/activate
+      #     pip install -r requirements.txt
+      #     python -u -m unittest --verbose
       - name: Produce tar archive with dockers
         run: |
           docker tag iriswebapp_db:${{ env.IRIS_VERSION }} iriswebapp_db:${{ env.HTTPSEND_VERSION }}

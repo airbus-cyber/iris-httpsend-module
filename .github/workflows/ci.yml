@@ -32,11 +32,17 @@ jobs:
       - name: Build wheel for iris-httpsend-module ${{ steps.get-version.outputs.version }}
         run: |
           python setup.py bdist_wheel
+      - name: Move wheel to current folder to create artifact
+        run: |
+          mv dist/iris_httpsend_module-${{ steps.get-version.outputs.version }}-py3-none-any.whl .
       - name: Archive iris-httpsend-module wheel
         uses: actions/upload-artifact@v4
         with:
           name: iris-httpsend-module-wheel
-          path: dist/iris_httpsend_module-${{ steps.get-version.outputs.version }}-py3-none-any.whl
+          path: | 
+            iris_httpsend_module-${{ steps.get-version.outputs.version }}-py3-none-any.whl
+            LICENSE
+            COPYING.*
           if-no-files-found: error
           retention-days: 1
     outputs:
@@ -85,6 +91,9 @@ jobs:
           source venv/bin/activate
           pip install -r requirements.txt
           python -u -m unittest --verbose
+      - name: Move licences to current directory to produce artifact with licences
+        run: |
+          mv iris-web/source/dependencies/LICENSE iris-web/source/dependencies/COPYING.* .
       - name: Produce tar archive with dockers
         run: |
           docker tag iriswebapp_db:${{ env.IRIS_VERSION }} iriswebapp_db:${{ env.HTTPSEND_VERSION }}

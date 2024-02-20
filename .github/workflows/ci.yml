@@ -84,13 +84,13 @@ jobs:
           printf "\ndependencies/iris_httpsend_module-${{ env.HTTPSEND_VERSION }}-py3-none-any.whl" >> source/requirements.txt
           cp .env.model .env
           docker-compose build
-      # - name: Run end-to-end tests
-      #   working-directory: iris-httpsend-module/tests
-      #   run: |
-      #     python -m venv venv
-      #     source venv/bin/activate
-      #     pip install -r requirements.txt
-      #     python -u -m unittest --verbose
+      - name: Run end-to-end tests
+        working-directory: iris-httpsend-module/tests
+        run: |
+          python -m venv venv
+          source venv/bin/activate
+          pip install -r requirements.txt
+          python -u -m unittest --verbose
       - name: Move licences to current directory to produce artifact with licences
         run: |
           mv iris-web/source/dependencies/LICENSE iris-web/source/dependencies/COPYING.* .

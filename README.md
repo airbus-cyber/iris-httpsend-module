@@ -27,6 +27,9 @@ This program uses the following software to run:
 |-|-|-|-|
 | DFIR-IRIS | 2^ | 2023 DFIR-IRIS | LGPL-3.0-or-later |
 
+See repositories of third-party softwares for more information about their
+dependencies.
+
 ## Description
 
 This is a plugin for incident response tool [DFIR-IRIS](https://dfir-iris.org/).

@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.0.0](https://github.com/airbus-cyber/iris-httpsend-module/compare/0.7.4...1.0.0)
 ### Bug Fixes
 * bump to 1.0.0
+* deletion of pycryptodome dependency
 
 ## [0.7.4](https://github.com/airbus-cyber/iris-httpsend-module/compare/0.7.3...0.7.4)
 ### Bug Fixes

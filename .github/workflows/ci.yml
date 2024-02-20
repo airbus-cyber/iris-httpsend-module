@@ -75,12 +75,12 @@ jobs:
           then
             git apply --verbose ../iris-httpsend-module/patches/*.patch
           fi
-      # - name: Build dockers
-      #   working-directory: iris-web
-      #   run: |
-      #     printf "\ndependencies/iris_httpsend_module-${{ env.HTTPSEND_VERSION }}-py3-none-any.whl" >> source/requirements.txt
-      #     cp .env.model .env
-      #     docker-compose build
+      - name: Build dockers
+        working-directory: iris-web
+        run: |
+          printf "\ndependencies/iris_httpsend_module-${{ env.HTTPSEND_VERSION }}-py3-none-any.whl" >> source/requirements.txt
+          cp .env.model .env
+          docker-compose build
       # - name: Run end-to-end tests
       #   working-directory: iris-httpsend-module/tests
       #   run: |

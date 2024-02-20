@@ -91,6 +91,9 @@ jobs:
       #     source venv/bin/activate
       #     pip install -r requirements.txt
       #     python -u -m unittest --verbose
+      - name: Move licences to current directory to produce artifact with licences
+        run: |
+          mv iris-web/source/dependencies/LICENSE iris-web/source/dependencies/COPYING.* .
       - name: Produce tar archive with dockers
         run: |
           docker tag iriswebapp_db:${{ env.IRIS_VERSION }} iriswebapp_db:${{ env.HTTPSEND_VERSION }}

@@ -32,12 +32,15 @@ jobs:
       - name: Build wheel for iris-httpsend-module ${{ steps.get-version.outputs.version }}
         run: |
           python setup.py bdist_wheel
+      - name: Move wheel to current folder to create artifact
+        run: |
+          mv dist/iris_httpsend_module-${{ steps.get-version.outputs.version }}-py3-none-any.whl .
       - name: Archive iris-httpsend-module wheel
         uses: actions/upload-artifact@v4
         with:
           name: iris-httpsend-module-wheel
           path: | 
-            dist/iris_httpsend_module-${{ steps.get-version.outputs.version }}-py3-none-any.whl
+            iris_httpsend_module-${{ steps.get-version.outputs.version }}-py3-none-any.whl
             LICENSE
             COPYING.*
           if-no-files-found: error
